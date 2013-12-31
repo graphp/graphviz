@@ -16,12 +16,6 @@ use Fhaculty\Graph\Vertex;
 class GraphViz
 {
     /**
-     *
-     * @var Graph
-     */
-    private $graph;
-
-    /**
      * file output format to use
      *
      * @var string
@@ -49,10 +43,8 @@ class GraphViz
 
     const EOL = PHP_EOL;
 
-    public function __construct(Graph $graphToPlot)
+    public function __construct()
     {
-        $this->graph = $graphToPlot;
-
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             $this->executable = 'dot.exe';
         }
@@ -92,16 +84,6 @@ class GraphViz
     }
 
     /**
-     * get original graph (with no layout and styles)
-     *
-     * @return Graph
-     */
-    public function getGraph()
-    {
-        return $this->graph;
-    }
-
-    /**
      * set graph image output format
      *
      * @param  string   $format png, svg, ps2, etc. (see 'man dot' for details on parameter '-T')
@@ -117,13 +99,14 @@ class GraphViz
     /**
      * create and display image for this graph
      *
+     * @param Graph $graph graph to display
      * @return void
      * @uses GraphViz::createImageFile()
      */
-    public function display()
+    public function display(Graph $graph)
     {
         // echo "Generate picture ...";
-        $tmp = $this->createImageFile();
+        $tmp = $this->createImageFile($graph);
 
         static $next = 0;
         if ($next > microtime(true)) {
@@ -183,12 +166,13 @@ class GraphViz
     /**
      * create image file data contents for this graph
      *
+     * @param Graph $graph graph to display
      * @return string
      * @uses GraphViz::createImageFile()
      */
-    public function createImageData()
+    public function createImageData(Graph $graph)
     {
-        $file = $this->createImageFile();
+        $file = $this->createImageFile($graph);
         $data = file_get_contents($file);
         unlink($file);
 
@@ -198,41 +182,44 @@ class GraphViz
     /**
      * create base64-encoded image src target data to be used for html images
      *
+     * @param Graph $graph graph to display
      * @return string
      * @uses GraphViz::createImageData()
      */
-    public function createImageSrc()
+    public function createImageSrc(Graph $graph)
     {
         $format = ($this->format === 'svg' || $this->format === 'svgz') ? 'svg+xml' : $this->format;
 
-        return 'data:image/' . $format . ';base64,' . base64_encode($this->createImageData());
+        return 'data:image/' . $format . ';base64,' . base64_encode($this->createImageData($graph));
     }
 
     /**
      * create image html code for this graph
      *
+     * @param Graph $graph graph to display
      * @return string
      * @uses GraphViz::createImageSrc()
      */
-    public function createImageHtml()
+    public function createImageHtml(Graph $graph)
     {
         if ($this->format === 'svg' || $this->format === 'svgz') {
-            return '<object type="image/svg+xml" data="' . $this->createImageSrc() . '"></object>';
+            return '<object type="image/svg+xml" data="' . $this->createImageSrc($graph) . '"></object>';
         }
 
-        return '<img src="' . $this->createImageSrc() . '" />';
+        return '<img src="' . $this->createImageSrc($graph) . '" />';
     }
 
     /**
      * create image file for this graph
      *
+     * @param Graph $graph graph to display
      * @return string                   filename
      * @throws UnexpectedValueException on error
      * @uses GraphViz::createScript()
      */
-    public function createImageFile()
+    public function createImageFile(Graph $graph)
     {
-        $script = $this->createScript();
+        $script = $this->createScript($graph);
         // var_dump($script);
 
         $tmp = tempnam(sys_get_temp_dir(), 'graphviz');
@@ -261,14 +248,15 @@ class GraphViz
     /**
      * create graphviz script representing this graph
      *
+     * @param Graph $graph graph to display
      * @return string
      * @uses Directed::hasDirected()
      * @uses Graph::getVertices()
      * @uses Graph::getEdges()
      */
-    public function createScript()
+    public function createScript(Graph $graph)
     {
-        $alg = new Directed($this->graph);
+        $alg = new Directed($graph);
         $directed = $alg->hasDirected();
 
         $script = ($directed ? 'di':'') . 'graph G {' . self::EOL;
@@ -281,14 +269,14 @@ class GraphViz
         );
 
         foreach ($globals as $key => $prefix) {
-            $bag = new AttributeBagNamespaced($this->graph, $prefix);
+            $bag = new AttributeBagNamespaced($graph, $prefix);
 
             if ($layout = $bag->getAttributes()) {
                 $script .= $this->formatIndent . $key . ' ' . $this->escapeAttributes($layout) . self::EOL;
             }
         }
 
-        $alg = new Groups($this->graph);
+        $alg = new Groups($graph);
         // only append group number to vertex label if there are at least 2 different groups
         $showGroups = ($alg->getNumberOfGroups() > 1);
 
@@ -311,11 +299,11 @@ class GraphViz
                 $script .= '  }' . self::EOL;
             }
         } else {
-            $alg = new Degree($this->graph);
+            $alg = new Degree($graph);
 
             // explicitly add all isolated vertices (vertices with no edges) and vertices with special layout set
             // other vertices wil be added automatically due to below edge definitions
-            foreach ($this->graph->getVertices()->getMap() as $vid => $vertex){
+            foreach ($graph->getVertices()->getMap() as $vid => $vertex){
                 $layout = $this->getLayoutVertex($vertex);
 
                 if($layout || $alg->isVertexIsolated($vertex)){
@@ -331,7 +319,7 @@ class GraphViz
         $edgeop = $directed ? ' -> ' : ' -- ';
 
         // add all edges as directed edges
-        foreach ($this->graph->getEdges() as $currentEdge) {
+        foreach ($graph->getEdges() as $currentEdge) {
             $both = $currentEdge->getVertices()->getVector();
             $currentStartVertex = $both[0];
             $currentTargetVertex = $both[1];

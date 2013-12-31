@@ -194,7 +194,8 @@ VIZ;
 
     private function getDotScriptForGraph(Graph $graph)
     {
-        $graphviz = new GraphViz($graph);
-        return $graphviz->createScript();
+        $graphviz = new GraphViz();
+
+        return $graphviz->createScript($graph);
     }
 }

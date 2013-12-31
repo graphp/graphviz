@@ -12,9 +12,10 @@ class Image implements ExporterInterface
 
     public function getOutput(Graph $graph)
     {
-        $graphviz = new GraphViz($graph);
+        $graphviz = new GraphViz();
         $graphviz->setFormat($this->format);
-        return $graphviz->createImageData();
+
+        return $graphviz->createImageData($graph);
     }
 
     /**

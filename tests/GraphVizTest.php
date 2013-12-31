@@ -10,6 +10,13 @@ use Graphp\GraphViz\GraphViz;
 
 class GraphVizTest extends TestCase
 {
+    private $graphViz;
+
+    public function setUp()
+    {
+        $this->graphViz = new GraphViz();
+    }
+
     public function testGraphEmpty()
     {
         $graph = new Graph();
@@ -20,7 +27,7 @@ graph G {
 
 VIZ;
 
-        $this->assertEquals($expected, $this->getDotScriptForGraph($graph));
+        $this->assertEquals($expected, $this->graphViz->createScript($graph));
     }
 
     public function testGraphIsolatedVertices()
@@ -37,7 +44,7 @@ graph G {
 
 VIZ;
 
-        $this->assertEquals($expected, $this->getDotScriptForGraph($graph));
+        $this->assertEquals($expected, $this->graphViz->createScript($graph));
     }
 
     public function testEscaping()
@@ -61,7 +68,7 @@ graph G {
 
 VIZ;
 
-        $this->assertEquals($expected, $this->getDotScriptForGraph($graph));
+        $this->assertEquals($expected, $this->graphViz->createScript($graph));
     }
 
     public function testGraphDirected()
@@ -76,7 +83,7 @@ digraph G {
 
 VIZ;
 
-        $this->assertEquals($expected, $this->getDotScriptForGraph($graph));
+        $this->assertEquals($expected, $this->graphViz->createScript($graph));
     }
 
     public function testGraphMixed()
@@ -94,7 +101,7 @@ digraph G {
 
 VIZ;
 
-        $this->assertEquals($expected, $this->getDotScriptForGraph($graph));
+        $this->assertEquals($expected, $this->graphViz->createScript($graph));
     }
 
 
@@ -115,7 +122,7 @@ graph G {
 
 VIZ;
 
-        $this->assertEquals($expected, $this->getDotScriptForGraph($graph));
+        $this->assertEquals($expected, $this->graphViz->createScript($graph));
     }
 
     public function testVertexLabels()
@@ -138,7 +145,7 @@ graph G {
 
 VIZ;
 
-        $this->assertEquals($expected, $this->getDotScriptForGraph($graph));
+        $this->assertEquals($expected, $this->graphViz->createScript($graph));
     }
 
     public function testEdgeLayoutAtributes()
@@ -161,7 +168,7 @@ graph G {
 
 VIZ;
 
-        $this->assertEquals($expected, $this->getDotScriptForGraph($graph));
+        $this->assertEquals($expected, $this->graphViz->createScript($graph));
     }
 
     public function testEdgeLabels()
@@ -188,14 +195,6 @@ graph G {
 
 VIZ;
 
-        $this->assertEquals($expected, $this->getDotScriptForGraph($graph));
-    }
-
-
-    private function getDotScriptForGraph(Graph $graph)
-    {
-        $graphviz = new GraphViz();
-
-        return $graphviz->createScript($graph);
+        $this->assertEquals($expected, $this->graphViz->createScript($graph));
     }
 }

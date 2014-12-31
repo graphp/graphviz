@@ -1,6 +1,6 @@
 <?php
 
-namespace Fhaculty\Graph;
+namespace Graphp\GraphViz;
 
 use Fhaculty\Graph\Algorithm\Directed;
 use Fhaculty\Graph\Algorithm\Groups;
@@ -10,6 +10,8 @@ use Fhaculty\Graph\Exception\InvalidArgumentException;
 use Fhaculty\Graph\Edge\Base as Edge;
 use \stdClass;
 use Fhaculty\Graph\Attribute\AttributeBagNamespaced;
+use Fhaculty\Graph\Graph;
+use Fhaculty\Graph\Vertex;
 
 class GraphViz
 {

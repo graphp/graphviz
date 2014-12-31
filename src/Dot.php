@@ -1,9 +1,10 @@
 <?php
 
-namespace Fhaculty\Graph\Exporter;
+namespace Graphp\GraphViz;
 
-use Fhaculty\Graph\GraphViz;
+use Graphp\GraphViz\GraphViz;
 use Fhaculty\Graph\Graph;
+use Fhaculty\Graph\Exporter\ExporterInterface;
 
 class Dot implements ExporterInterface
 {

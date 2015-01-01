@@ -147,39 +147,6 @@ class GraphViz
         // echo "... done\n";
     }
 
-    const LAYOUT_GRAPH = 1;
-    const LAYOUT_EDGE = 2;
-    const LAYOUT_VERTEX = 3;
-
-    public function setLayout($where, $layout, $value = NULL)
-    {
-        if (!is_array($where)) {
-            $where = array($where);
-        }
-        if (func_num_args() > 2) {
-            $layout = array($layout => $value);
-        }
-
-        $map = array(
-            self::LAYOUT_GRAPH => 'graphviz.graph.',
-            self::LAYOUT_EDGE => 'graphviz.edge.',
-            self::LAYOUT_VERTEX => 'graphviz.node',
-        );
-
-        foreach ($where as $where) {
-            if (isset($map[$where])) {
-                $bag = new AttributeBagNamespaced($this->graph, $map[$where]);
-                $bag->setAttributes($layout);
-            } else {
-                throw new InvalidArgumentException('Invalid layout identifier');
-            }
-        }
-
-        return $this;
-    }
-
-    // end
-
     /**
      * create image file data contents for this graph
      *

@@ -27,8 +27,8 @@ $red->setAttribtue('graphviz.color', 'red');
 $edge = $blue->createEdgeTo($red);
 $edge->setAttribute('graphviz.color', 'grey');
 
-$graphviz = new Graphp\GraphViz\GraphViz($graph);
-$graphviz->display();
+$graphviz = new Graphp\GraphViz\GraphViz();
+$graphviz->display($graph);
 ````
 
 ## Install
@@ -38,7 +38,7 @@ The recommended way to install this library is [through composer](http://getcomp
 ```JSON
 {
     "require": {
-        "graphp/graphviz": "~0.1.0"
+        "graphp/graphviz": "~0.2.0"
     }
 }
 ```

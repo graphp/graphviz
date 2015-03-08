@@ -22,7 +22,7 @@ $blue = $graph->createVertex('blue');
 $blue->setAttribute('graphviz.color', 'blue');
 
 $red = $graph->createVertex('red');
-$red->setAttribtue('graphviz.color', 'red');
+$red->setAttribute('graphviz.color', 'red');
 
 $edge = $blue->createEdgeTo($red);
 $edge->setAttribute('graphviz.color', 'grey');
@@ -30,6 +30,10 @@ $edge->setAttribute('graphviz.color', 'grey');
 $graphviz = new Graphp\GraphViz\GraphViz();
 $graphviz->display($graph);
 ````
+
+The above code will open your default image viewer with the following image:
+
+![red-blue](https://cloud.githubusercontent.com/assets/776829/6545433/636e8534-c587-11e4-94f4-4d540b4564ed.png)
 
 ## Install
 

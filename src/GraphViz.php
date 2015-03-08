@@ -2,9 +2,9 @@
 
 namespace Graphp\GraphViz;
 
-use Fhaculty\Graph\Algorithm\Directed;
-use Fhaculty\Graph\Algorithm\Groups;
-use Fhaculty\Graph\Algorithm\Degree;
+use Graphp\Algorithms\Directed;
+use Graphp\Algorithms\Groups;
+use Graphp\Algorithms\Degree;
 use Fhaculty\Graph\Exception\UnexpectedValueException;
 use Fhaculty\Graph\Exception\InvalidArgumentException;
 use Fhaculty\Graph\Edge\Base as Edge;

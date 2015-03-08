@@ -4,6 +4,11 @@ This file is a manually maintained list of changes for each release. Feel free
 to add your changes here when sending pull requests. Also send corrections if
 you spot any mistakes.
 
+## 0.2.1 (2015-03-08)
+
+*   Support graph v0.9 (while keeping BC)
+    ([#9](https://github.com/graphp/graphviz/pull/9))
+
 ## 0.2.0 (2015-01-19)
 
 *   BC break: Refactor to inject Graph into GraphViz on demand, inject GraphViz into exporters

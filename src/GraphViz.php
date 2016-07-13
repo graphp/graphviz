@@ -39,6 +39,15 @@ class GraphViz
      */
     private $formatIndent = '  ';
 
+    /**
+     * options for rendering
+     *
+     * @var array
+     * @see GraphViz::getLayoutEdge()
+     * @see GraphViz::getLayoutVertex()
+     */
+    private $options = array();
+
     const DELAY_OPEN = 2.0;
 
     const EOL = PHP_EOL;
@@ -48,6 +57,18 @@ class GraphViz
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             $this->executable = 'dot.exe';
         }
+        $this->options['label_edges_with_weights'] = true; //default
+    }
+
+    /* Update an option
+     *
+     * @param string $key
+     * @param string $value
+     * @return array $options
+     */
+    public function setOption($key,$value) {
+        $this->options[$key] = $value;
+        return $this->options;
     }
 
     /**
@@ -411,13 +432,15 @@ class GraphViz
             $label = '0/' . $capacity;
         }
 
-        $weight = $edge->getWeight();
-        // weight is set
-        if ($weight !== NULL) {
-            if ($label === NULL) {
-                $label = $weight;
-            } else {
-                $label .= '/' . $weight;
+        if(isset($this->options['label_edges_with_weights']) && false !== $this->options['label_edges_with_weights']) {
+            $weight = $edge->getWeight();
+            // weight is set
+            if ($weight !== NULL) {
+                if ($label === NULL) {
+                    $label = $weight;
+                } else {
+                    $label .= '/' . $weight;
+                }
             }
         }
 

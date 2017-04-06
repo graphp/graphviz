@@ -33,6 +33,8 @@ Once [installed](#install), let's build and display a sample graph:
 
 ````php
 $graph = new Fhaculty\Graph\Graph();
+// Set graph name to blank to hide default G tooltip for SVG output
+$graph->setAttribute('graphviz.name', '');
 
 $blue = $graph->createVertex('blue');
 $blue->setAttribute('graphviz.color', 'blue');

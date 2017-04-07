@@ -226,6 +226,11 @@ class GraphViz
         $alg = new Directed($graph);
         $directed = $alg->hasDirected();
 
+        /*
+         * The website [http://www.graphviz.org/content/dot-language] uses the term `ID` when displaying
+         * the abstract grammar for the DOT language.
+         * But the man pages for dot use the term `name` when describing the graph file language.
+         */
         $name = $graph->getAttribute('graphviz.name');
         if ($name === null || $name === 'G') {
             // don't escape a name of G to maintain default behavior

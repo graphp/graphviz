@@ -4,6 +4,11 @@ This file is a manually maintained list of changes for each release. Feel free
 to add your changes here when sending pull requests. Also send corrections if
 you spot any mistakes.
 
+## 0.2.2 (2017-04-07)
+
+*   Allow setting of graph name via graphviz.name attribute 
+    ([#20](https://github.com/graphp/graphviz/pull/20))
+
 ## 0.2.1 (2015-03-08)
 
 *   Support graph v0.9 (while keeping BC)

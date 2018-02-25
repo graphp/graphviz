@@ -2,6 +2,7 @@
 
 namespace Graphp\GraphViz;
 
+use Fhaculty\Graph\Set\Vertices;
 use Graphp\Algorithms\Directed;
 use Graphp\Algorithms\Groups;
 use Graphp\Algorithms\Degree;
@@ -213,6 +214,57 @@ class GraphViz
     }
 
     /**
+     * @param Vertex $vertex
+     * @return bool
+     */
+    protected function vertexRequiresScript(Vertex $vertex)
+    {
+        $graph = $vertex->getGraph();
+        $degree = new Degree($graph);
+        $layout = $this->getLayoutVertex($vertex);
+        // If isolated (no edges) or has layout attributes, vertex cannot be fully defined
+        // via related edge definitions
+        return $layout || $degree->isVertexIsolated($vertex);
+    }
+
+    /**
+     * @param Vertex $vertex
+     * @param string $indent
+     * @return string
+     */
+    protected function createVertexScript(Vertex $vertex, $indent = '')
+    {
+        $vid = $vertex->getId();
+        $script = $indent . $this->escapeId($vid);
+        $layout = $this->getLayoutVertex($vertex);
+        if($layout){
+            $script .= ' ' . $this->escapeAttributes($layout);
+        }
+        $script .= self::EOL;
+        return $script;
+    }
+
+    /**
+     * @param $id
+     * @param Vertices $vertices
+     * @param string $indent
+     * @return string
+     */
+    protected function createSubgraphScript($id, Vertices $vertices, $indent = '')
+    {
+        $script = $this->formatIndent . 'subgraph cluster_' . $id . ' {' . self::EOL .
+            $indent . 'label = ' . $this->escape($id) . self::EOL;
+
+        foreach($vertices->getMap() as $vid => $vertex) {
+            if($this->vertexRequiresScript($vertex)){
+                $script .= $this->createVertexScript($vertex, $indent);
+            }
+        }
+        $script .= '  }' . self::EOL;
+        return $script;
+    }
+
+    /**
      * create graphviz script representing this graph
      *
      * @param Graph $graph graph to display
@@ -243,49 +295,39 @@ class GraphViz
             }
         }
 
+        // Handle grouped vertices
         $alg = new Groups($graph);
-        // only append group number to vertex label if there are at least 2 different groups
-        $showGroups = ($alg->getNumberOfGroups() > 1);
-
-        if ($showGroups) {
-            $gid = 0;
-            $indent = str_repeat($this->formatIndent, 2);
-            // put each group of vertices in a separate subgraph cluster
-            foreach ($alg->getGroups() as $group) {
-                $script .= $this->formatIndent . 'subgraph cluster_' . $gid++ . ' {' . self::EOL .
-                           $indent . 'label = ' . $this->escape($group) . self::EOL;
-                foreach($alg->getVerticesGroup($group)->getMap() as $vid => $vertex) {
-                    $layout = $this->getLayoutVertex($vertex);
-
-                    $script .= $indent . $this->escapeId($vid);
-                    if($layout){
-                        $script .= ' ' . $this->escapeAttributes($layout);
-                    }
-                    $script .= self::EOL;
-                }
-                $script .= '  }' . self::EOL;
+        $groups = $alg->getGroups();
+        $showGroups = count($groups) > 1;
+        $indent = str_repeat($this->formatIndent, 2);
+        foreach ($alg->getGroups() as $group) {
+            if (!$showGroups || $group === null) { // TODO: Remove if(!$showGroups) condition when Vertex::group is made nullable
+                continue; // Group is not set, skip
             }
+            $vertices = $alg->getVerticesGroup((string)$group); // getGroups returns array_keys()
+            $script .= $this->createSubgraphScript($group, $vertices, $indent);
+        }
+
+        // Handle ungrouped vertices
+        // TODO: Remove if($showGroups) branch when Vertex::group is made nullable
+        if ($showGroups) {
+            $group = end($groups);
+            $vertices = $graph->getVertices()->getVerticesMatch(function (Vertex $vertex) use ($group) {
+                return $vertex->getGroup() === null;
+            });
         } else {
-            $alg = new Degree($graph);
-
-            // explicitly add all isolated vertices (vertices with no edges) and vertices with special layout set
-            // other vertices wil be added automatically due to below edge definitions
-            foreach ($graph->getVertices()->getMap() as $vid => $vertex){
-                $layout = $this->getLayoutVertex($vertex);
-
-                if($layout || $alg->isVertexIsolated($vertex)){
-                    $script .= $this->formatIndent . $this->escapeId($vid);
-                    if($layout){
-                        $script .= ' ' . $this->escapeAttributes($layout);
-                    }
-                    $script .= self::EOL;
-                }
+            $vertices = $graph->getVertices();
+        }
+        foreach ($vertices as $vertex) {
+            if ($this->vertexRequiresScript($vertex)) {
+                $script .= $this->createVertexScript($vertex);
             }
         }
 
         $edgeop = $directed ? ' -> ' : ' -- ';
 
         // add all edges as directed edges
+        // TODO: Sort edges originating in subgraphs into relevant subgraphs definitions
         foreach ($graph->getEdges() as $currentEdge) {
             $both = $currentEdge->getVertices()->getVector();
             $currentStartVertex = $both[0];

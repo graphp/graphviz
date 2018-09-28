@@ -53,6 +53,21 @@ invoke `sudo apt-get install graphviz`, Windows users have to
 [download GraphViZ for Windows](http://www.graphviz.org/Download_windows.php) and remaining
 users should install from [GraphViz homepage](http://www.graphviz.org/Download.php).
 
+## Tests
+
+To run the test suite, you first need to clone this repo and then install all
+dependencies [through Composer](https://getcomposer.org):
+
+```bash
+$ composer install
+```
+
+To run the test suite, go to the project root and run:
+
+```bash
+$ php vendor/bin/phpunit
+```
+
 ## License
 
 Released under the terms of the permissive [MIT license](http://opensource.org/licenses/MIT).

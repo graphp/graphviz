@@ -47,6 +47,11 @@ The recommended way to install this library is [through composer](http://getcomp
 }
 ```
 
+This project aims to run on any platform and thus does not require any PHP
+extensions and supports running on legacy PHP 5.3 through current PHP 7+ and
+HHVM.
+It's *highly recommended to use PHP 7+* for this project.
+
 In order to be able to use the [graph drawing feature](#graph-drawing) you'll have to
 install GraphViz (`dot` executable). Users of Debian/Ubuntu-based distributions may simply
 invoke `sudo apt-get install graphviz`, Windows users have to

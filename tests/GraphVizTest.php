@@ -7,6 +7,7 @@ use Fhaculty\Graph\Exception\OverflowException;
 use Fhaculty\Graph\Exception\InvalidArgumentException;
 use Fhaculty\Graph\Graph;
 use Graphp\GraphViz\GraphViz;
+use PHPUnit\Framework\TestCase;
 
 class GraphVizTest extends TestCase
 {

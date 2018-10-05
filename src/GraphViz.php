@@ -333,7 +333,14 @@ class GraphViz
         if (preg_match('/^(?:\-?(?:\.\d+|\d+(?:\.\d+)?))$/i', $id)) {
             return $id;
         }
-
+        /**
+         * Check if it is HTML code as defined by graphviz,
+         * string that starts with < and end with > with some very specific tags inside
+         * It should return the text without any replacement
+         */
+        if ($id[0] == '<' && $id[strlen($id)-1] == '>') {
+            return $id;
+        }
         return '"' . str_replace(array('&', '<', '>', '"', "'", '\\', "\n"), array('&amp;', '&lt;', '&gt;', '&quot;', '&apos;', '\\\\', '\\l'), $id) . '"';
     }
 

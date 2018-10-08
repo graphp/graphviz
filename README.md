@@ -18,6 +18,9 @@ the actual layouting of the graph is left up to the excelent [GraphViz](http://w
   * [Graph attributes](#graph-attributes)
   * [Vertex attributes](#vertex-attributes)
   * [Edge attributes](#edge-attributes)
+* [Labels](#labels)
+  * [Vertex labels](#vertex-labels)
+  * [Edge labels](#edge-labels)
 * [Install](#install)
 * [Tests](#tests)
 * [License](#license)
@@ -155,6 +158,110 @@ $b = $graph->createVertex('b');
 
 $blue = $a->createEdgeTo($b);
 $blue->setAttribute('graphviz.color', 'blue');
+```
+
+## Labels
+
+### Vertex labels
+
+By default, GraphViz will always render the vertex ID as the label:
+
+```php
+$graph = new Fhaculty\Graph\Graph();
+
+$blue = $graph->createVertex('blue');
+```
+
+If you assign a vertex balance, this library will automatically include a
+`label` attribute that includes the balance value. The following example will
+automatically assign `blue (+10)` as the label:
+
+```php
+$graph = new Fhaculty\Graph\Graph();
+
+$blue = $graph->createVertex('blue');
+$blue->setBalance(10);
+```
+
+You can use [vertex attributes](#vertex-attributes) to explicitly assign a
+custom `label` attribute. Note that any balance value will still be appended
+like in the previous example.
+
+```php
+$graph = new Fhaculty\Graph\Graph();
+
+$blue = $graph->createVertex('blue');
+$blue->setAttribute('graphviz.label', 'Hello world!');
+```
+
+### Edge labels
+
+By default, GraphViz will not render any label on an edge:
+
+```php
+$graph = new Fhaculty\Graph\Graph();
+
+$a = $graph->createVertex('a');
+$b = $graph->createVertex('b');
+
+$edge = $a->createEdgeTo($b);
+```
+
+If you assign an edge flow, capacity or weight, this library will automatically
+include a `label` attribute that includes these values. The following example
+will automatically assign `100` as the label for the weighted edge:
+
+```php
+$graph = new Fhaculty\Graph\Graph();
+
+$a = $graph->createVertex('a');
+$b = $graph->createVertex('b');
+
+$edge = $a->createEdgeTo($b);
+$edge->setWeight(100);
+```
+
+The following example will automatically assign `4/10` as the label for an edge
+with both flow and maximum capacity set:
+
+```php
+$graph = new Fhaculty\Graph\Graph();
+
+$a = $graph->createVertex('a');
+$b = $graph->createVertex('b');
+
+$edge = $a->createEdgeTo($b);
+$edge->setFlow(4);
+$edge->setCapacity(10);
+```
+
+The following example will automatically assign `4/∞/100` as the label for a
+weighted edge with a flow and unlimited capacity:
+
+```php
+$graph = new Fhaculty\Graph\Graph();
+
+$a = $graph->createVertex('a');
+$b = $graph->createVertex('b');
+
+$edge = $a->createEdgeTo($b);
+$edge->setFlow(4);
+$edge->setCapacity(null);
+$edge->setWeight(100);
+```
+
+You can use [edge attributes](#edge-attributes) to explicitly assign any
+custom `label` attribute. Note that any flow, capacity or weight value will still
+be appended like in the previous examples.
+
+```php
+$graph = new Fhaculty\Graph\Graph();
+
+$a = $graph->createVertex('a');
+$b = $graph->createVertex('b');
+
+$edge = $a->createEdgeTo($b);
+$edge->setAttribute('graphviz.label', 'important');
 ```
 
 ## Install

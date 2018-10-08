@@ -21,6 +21,8 @@ the actual layouting of the graph is left up to the excelent [GraphViz](http://w
 * [Labels](#labels)
   * [Vertex labels](#vertex-labels)
   * [Edge labels](#edge-labels)
+  * [HTML-like labels](#html-like-labels)
+  * [Record-based nodes](#record-based-nodes)
 * [Install](#install)
 * [Tests](#tests)
 * [License](#license)
@@ -60,6 +62,10 @@ GraPHP attributes as documented below.
 
 For the full list of all GraphViz attributes, please refer to the
 [GraphViz documentation](https://graphviz.gitlab.io/_pages/doc/info/attrs.html).
+
+Note that all [attributes](#attributes) will be quoted and escaped by default,
+so a `>` will appear as-is and will not be interpreted as HTML. See also
+[HTML-like labels](#html-like-labels) below for more details.
 
 ### Graph attributes
 
@@ -194,6 +200,10 @@ $blue = $graph->createVertex('blue');
 $blue->setAttribute('graphviz.label', 'Hello world!');
 ```
 
+Note that all [attributes](#attributes) will be quoted and escaped by default,
+so a `>` will appear as-is and will not be interpreted as HTML. See also
+[HTML-like labels](#html-like-labels) below for more details.
+
 ### Edge labels
 
 By default, GraphViz will not render any label on an edge:
@@ -263,6 +273,79 @@ $b = $graph->createVertex('b');
 $edge = $a->createEdgeTo($b);
 $edge->setAttribute('graphviz.label', 'important');
 ```
+
+### HTML-like labels
+
+Note that all [attributes](#attributes) will be quoted and escaped by default,
+so a `>` will appear as-is and will not be interpreted as HTML. GraphViz also
+supports [HTML-like labels](https://graphviz.gitlab.io/_pages/doc/info/shapes.html#html)
+that support a subset of HTML features.
+
+GraphViz requires any HTML-like label to be wrapped in `<` and `>` and only
+supports a limited subset of HTML features as documented above. In order to
+prevent automatic quoting and escaping, all attribute values have to be passed
+to the static `GraphViz::raw()` helper like this:
+
+```php
+$graph = new Fhaculty\Graph\Graph();
+
+$a = $graph->createVertex('Entity');
+$a->setAttribute('graphviz.shape', 'none');
+$a->setAttribute('graphviz.label', GraphViz::raw('<
+<table cellspacing="0" border="0" cellborder="1">
+    <tr><td bgcolor="#eeeeee"><b>\N</b></td></tr>
+    <tr><td></td></tr><tr>
+    <td>+ touch()</td></tr>
+</table>>'));
+
+$b = $graph->createVertex('Block');
+$b->createEdgeTo($a);
+$b->setAttribute('graphviz.shape', 'none');
+$b->setAttribute('graphviz.label', GraphViz::raw('<
+<table cellspacing="0" border="0" cellborder="1">
+    <tr><td bgcolor="#eeeeee"><b>\N</b></td></tr>
+    <tr><td>- size:int</td></tr>
+    <tr><td>+ touch()</td></tr>
+</table>>'));
+```
+
+![UML html graph example](examples/11-uml-html.png)
+
+See also the [examples](examples/).
+
+### Record-based nodes
+
+Note that all [attributes](#attributes) will be quoted and escaped by default,
+so a `>` will appear as-is and will not be interpreted as HTML. Similar to the
+above [HTML-like labels](#html-like-labels), GraphViz also supports simple
+[record-based nodes](https://graphviz.gitlab.io/_pages/doc/info/shapes.html#record)
+using the `record` and `Mrecord` shape attributes and structured label attributes.
+
+GraphViz requires any record-based node label to be quoted, but uses special
+syntax to mark record fields and optional port names. In order to prevent
+automatic quoting and escaping, all attribute values have to be quoted manually
+and passed to the static `GraphViz::raw()` helper like this:
+
+```php
+$graph = new Fhaculty\Graph\Graph();
+
+$a = $graph->createVertex();
+$a->setAttribute('graphviz.shape', 'Mrecord');
+$a->setAttribute('graphviz.label', GraphViz::raw('"<f0> left |<middle> middle |<f2> right"'));
+
+$b = $graph->createVertex();
+$b->setAttribute('graphviz.shape', 'Mrecord');
+$b->setAttribute('graphviz.label', GraphViz::raw('"<f0> left |<f1> middle |<right> right"'));
+
+// a:middle -> b:right
+$edge = $a->createEdgeTo($b);
+$edge->setAttribute('graphviz.tailport', 'middle');
+$edge->setAttribute('graphviz.headport', 'right');
+```
+
+![records with ports graph example](examples/13-record-ports.png)
+
+See also the [examples](examples/).
 
 ## Install
 

@@ -38,13 +38,16 @@ class GraphViz
      * @see GraphViz::createScript()
      */
     private $formatIndent = '  ';
+    
+    private $charset;
 
     const DELAY_OPEN = 2.0;
 
     const EOL = PHP_EOL;
 
-    public function __construct()
+    public function __construct($charset = "UTF-8")
     {
+        $this->charset = $charset;
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             $this->executable = 'dot.exe';
         }
@@ -157,7 +160,7 @@ class GraphViz
     {
         $format = ($this->format === 'svg' || $this->format === 'svgz') ? 'svg+xml' : $this->format;
 
-        return 'data:image/' . $format . ';base64,' . base64_encode($this->createImageData($graph));
+        return 'data:image/' . $format . ';base64;charset=' . $this->charset. ',' . base64_encode($this->createImageData($graph));
     }
 
     /**

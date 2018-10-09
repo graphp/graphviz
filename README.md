@@ -63,9 +63,10 @@ GraPHP attributes as documented below.
 For the full list of all GraphViz attributes, please refer to the
 [GraphViz documentation](https://graphviz.gitlab.io/_pages/doc/info/attrs.html).
 
-Note that all [attributes](#attributes) will be quoted and escaped by default,
-so a `>` will appear as-is and will not be interpreted as HTML. See also
-[HTML-like labels](#html-like-labels) below for more details.
+Note that all attributes use UTF-8 encoding (Unicode) and will be quoted and
+escaped by default, so a `ö` and `>` will appear as-is and will not be
+interpreted as HTML. See also [HTML-like labels](#html-like-labels) below for
+more details.
 
 ### Graph attributes
 
@@ -81,6 +82,22 @@ $graph->setAttribute('graphviz.graph.bgcolor', 'transparent');
 > Note how this uses the `graphviz.graph.` prefix and not just `graphviz.`. This
   is done for consistency reasons with respect to default vertex and edge
   attributes as documented below.
+
+For example, the `rankdir` attribute can be used to change the orientation to
+horizontal mode (left to right) like this:
+
+```php
+$graph = new Fhaculty\Graph\Graph();
+$graph->setAttribute('graphviz.graph.rankdir', 'LR');
+
+$hello = $graph->createVertex('hello');
+$world = $graph->createVertex('wörld');
+$hello->createEdgeTo($world);
+```
+
+![html graph example](examples/02-html.png)
+
+See also the [examples](examples/).
 
 ### Vertex attributes
 

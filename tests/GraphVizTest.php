@@ -227,4 +227,34 @@ VIZ;
 
         $this->assertEquals($expected, $this->graphViz->createScript($graph));
     }
+
+    public function testCreateImageSrcWillExportPngDefaultFormat()
+    {
+        $graph = new Graph();
+
+        $src = $this->graphViz->createImageSrc($graph);
+
+        $this->assertStringStartsWith('data:image/png;base64,', $src);
+    }
+
+    public function testCreateImageSrcAsSvgWithUtf8DefaultCharset()
+    {
+        $graph = new Graph();
+
+        $this->graphViz->setFormat('svg');
+        $src = $this->graphViz->createImageSrc($graph);
+
+        $this->assertStringStartsWith('data:image/svg+xml;charset=UTF-8;base64,', $src);
+    }
+
+    public function testCreateImageSrcAsSvgzWithExplicitIsoCharsetLatin1()
+    {
+        $graph = new Graph();
+        $graph->setAttribute('graphviz.graph.charset', 'iso-8859-1');
+
+        $this->graphViz->setFormat('svgz');
+        $src = $this->graphViz->createImageSrc($graph);
+
+        $this->assertStringStartsWith('data:image/svg+xml;charset=iso-8859-1;base64,', $src);
+    }
 }

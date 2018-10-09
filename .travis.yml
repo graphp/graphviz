@@ -22,6 +22,11 @@ matrix:
 
 sudo: false
 
+addons:
+  apt:
+    packages:
+      - graphviz
+
 install:
   - composer install --no-interaction
 

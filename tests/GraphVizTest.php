@@ -18,7 +18,35 @@ class GraphVizTest extends TestCase
         $graph = new Graph();
 
         $expected = <<<VIZ
-graph G {
+graph {
+}
+
+VIZ;
+
+        $this->assertEquals($expected, $this->graphViz->createScript($graph));
+    }
+
+    public function testGraphWithName()
+    {
+        $graph = new Graph();
+        $graph->setAttribute('graphviz.name', 'G');
+
+                $expected = <<<VIZ
+graph "G" {
+}
+
+VIZ;
+
+        $this->assertEquals($expected, $this->graphViz->createScript($graph));
+    }
+
+    public function testGraphWithNameWithSpaces()
+    {
+        $graph = new Graph();
+        $graph->setAttribute('graphviz.name', 'My Graph Name');
+
+                $expected = <<<VIZ
+graph "My Graph Name" {
 }
 
 VIZ;
@@ -33,7 +61,7 @@ VIZ;
         $graph->createVertex('b');
 
         $expected = <<<VIZ
-graph G {
+graph {
   "a"
   "b"
 }
@@ -51,7 +79,7 @@ VIZ;
         $graph->setAttribute('graphviz.edge.color', 'grey');
 
         $expected = <<<VIZ
-graph G {
+graph {
   graph [bgcolor="transparent"]
   node [color="blue"]
   edge [color="grey"]
@@ -69,7 +97,7 @@ VIZ;
         $graph->setAttribute('graphviz.unknown.color', 'red');
 
         $expected = <<<VIZ
-graph G {
+graph {
 }
 
 VIZ;
@@ -88,7 +116,7 @@ VIZ;
 
 
         $expected = <<<VIZ
-graph G {
+graph {
   "a"
   "b¹²³ is; ok\\\\ay, &quot;right&quot;?"
   3
@@ -107,7 +135,7 @@ VIZ;
         $graph->createVertex('a')->createEdgeTo($graph->createVertex('b'));
 
         $expected = <<<VIZ
-digraph G {
+digraph {
   "a" -> "b"
 }
 
@@ -124,7 +152,7 @@ VIZ;
         $graph->createVertex('c')->createEdge($graph->getVertex('b'));
 
         $expected = <<<VIZ
-digraph G {
+digraph {
   "a" -> "b"
   "c" -> "b" [dir="none"]
 }
@@ -144,7 +172,7 @@ VIZ;
         $graph->getVertex('b')->createEdge($graph->getVertex('c'));
 
         $expected = <<<VIZ
-graph G {
+graph {
   "d"
   "a" -- "b"
   "b" -- "c"
@@ -165,7 +193,7 @@ VIZ;
         $graph->createVertex('e')->setBalance(2)->setAttribute('graphviz.label', 'unnamed');
 
         $expected = <<<VIZ
-graph G {
+graph {
   "a" [label="a (+1)"]
   "b" [label="b (0)"]
   "c" [label="c (-1)"]
@@ -188,7 +216,7 @@ VIZ;
         $graph->createVertex('5a')->createEdge($graph->createVertex('5b'))->getAttributeBag()->setAttributes(array('graphviz.a' => 'b', 'graphviz.c' => 'd'));
 
         $expected = <<<VIZ
-graph G {
+graph {
   "1a" -- "1b"
   "2a" -- "2b" [numeric=20]
   "3a" -- "3b" [textual="forty"]
@@ -213,7 +241,7 @@ VIZ;
         $graph->createVertex('7a')->createEdge($graph->createVertex('7b'))->setFlow(70)->setAttribute('graphviz.label', 'prefixed');
 
         $expected = <<<VIZ
-graph G {
+graph {
   "1a" -- "1b"
   "2a" -- "2b" [label=20]
   "3a" -- "3b" [label="0/30"]

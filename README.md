@@ -99,6 +99,19 @@ $hello->createEdgeTo($world);
 
 See also the [examples](examples/).
 
+Additionally, this library accepts an optional `graphviz.name` attribute that
+will be used as the name (or ID) for the root graph object in the DOT output if
+given. Unless explicitly assigned, this will be omitted by default. It is common
+to assign a `G` here, but usually there should be no need to assign this. Among
+others, this may be used as the title or tooltip in SVG output.
+
+```php
+$graph = new Fhaculty\Graph\Graph();
+$graph->setAttribute('graphviz.name', 'G');
+
+$graph->createVertex('first');
+```
+
 ### Vertex attributes
 
 GraphViz supports a number of attributes on each vertex instance (GraphViz calls

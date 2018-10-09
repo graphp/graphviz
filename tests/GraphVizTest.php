@@ -26,6 +26,62 @@ VIZ;
         $this->assertEquals($expected, $this->graphViz->createScript($graph));
     }
 
+    public  function testGraphExplicitDefaultName()
+    {
+        $graph = new Graph();
+        $graph->setAttribute('graphviz.name', 'G');
+
+                $expected = <<<VIZ
+graph G {
+}
+
+VIZ;
+
+        $this->assertEquals($expected, $this->graphViz->createScript($graph));
+    }
+
+    public  function testGraphName()
+    {
+        $graph = new Graph();
+        $graph->setAttribute('graphviz.name', 'My Graph Name');
+
+                $expected = <<<VIZ
+graph "My Graph Name" {
+}
+
+VIZ;
+
+        $this->assertEquals($expected, $this->graphViz->createScript($graph));
+    }
+
+    public  function testGraphBlankName()
+    {
+        $graph = new Graph();
+        $graph->setAttribute('graphviz.name', '');
+
+                $expected = <<<VIZ
+graph "" {
+}
+
+VIZ;
+
+        $this->assertEquals($expected, $this->graphViz->createScript($graph));
+    }
+
+    public  function testGraphNonBlankName()
+    {
+        $graph = new Graph();
+        $graph->setAttribute('graphviz.name', ' ');
+
+                $expected = <<<VIZ
+graph " " {
+}
+
+VIZ;
+
+        $this->assertEquals($expected, $this->graphViz->createScript($graph));
+    }
+
     public function testGraphIsolatedVertices()
     {
         $graph = new Graph();

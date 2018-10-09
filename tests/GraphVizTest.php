@@ -1,10 +1,5 @@
 <?php
 
-use Fhaculty\Graph\Exception\RuntimeException;
-use Fhaculty\Graph\Exporter\Image;
-use Fhaculty\Graph\Vertex;
-use Fhaculty\Graph\Exception\OverflowException;
-use Fhaculty\Graph\Exception\InvalidArgumentException;
 use Fhaculty\Graph\Graph;
 use Graphp\GraphViz\GraphViz;
 use PHPUnit\Framework\TestCase;
@@ -41,6 +36,40 @@ VIZ;
 graph G {
   "a"
   "b"
+}
+
+VIZ;
+
+        $this->assertEquals($expected, $this->graphViz->createScript($graph));
+    }
+
+    public function testGraphDefaultAttributes()
+    {
+        $graph = new Graph();
+        $graph->setAttribute('graphviz.graph.bgcolor', 'transparent');
+        $graph->setAttribute('graphviz.node.color', 'blue');
+        $graph->setAttribute('graphviz.edge.color', 'grey');
+
+        $expected = <<<VIZ
+graph G {
+  graph [bgcolor="transparent"]
+  node [color="blue"]
+  edge [color="grey"]
+}
+
+VIZ;
+
+        $this->assertEquals($expected, $this->graphViz->createScript($graph));
+    }
+
+    public function testUnknownGraphAttributesWillBeDiscarded()
+    {
+        $graph = new Graph();
+        $graph->setAttribute('graphviz.vertex.color', 'blue');
+        $graph->setAttribute('graphviz.unknown.color', 'red');
+
+        $expected = <<<VIZ
+graph G {
 }
 
 VIZ;

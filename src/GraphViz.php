@@ -234,14 +234,11 @@ class GraphViz
          * But the man pages for dot use the term `name` when describing the graph file language.
          */
         $name = $graph->getAttribute('graphviz.name');
-        if ($name === null || $name === 'G') {
-            // don't escape a name of G to maintain default behavior
-            $name = 'G';
-        } else {
-            $name = $this->escapeId($name);
+        if ($name !== null) {
+            $name = $this->escapeId($name) . ' ';
         }
 
-        $script = ($directed ? 'di':'') . 'graph ' . $name . ' {' . self::EOL;
+        $script = ($directed ? 'di':'') . 'graph ' . $name . '{' . self::EOL;
 
         // add global attributes
         $globals = array(

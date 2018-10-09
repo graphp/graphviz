@@ -33,8 +33,6 @@ Once [installed](#install), let's build and display a sample graph:
 
 ````php
 $graph = new Fhaculty\Graph\Graph();
-// Set graph name to blank to hide default G tooltip for SVG output
-$graph->setAttribute('graphviz.name', '');
 
 $blue = $graph->createVertex('blue');
 $blue->setAttribute('graphviz.color', 'blue');
@@ -100,6 +98,19 @@ $hello->createEdgeTo($world);
 ![html graph example](examples/02-html.png)
 
 See also the [examples](examples/).
+
+Additionally, this library accepts an optional `graphviz.name` attribute that
+will be used as the name (or ID) for the root graph object in the DOT output if
+given. Unless explicitly assigned, this will be omitted by default. It is common
+to assign a `G` here, but usually there should be no need to assign this. Among
+others, this may be used as the title or tooltip in SVG output.
+
+```php
+$graph = new Fhaculty\Graph\Graph();
+$graph->setAttribute('graphviz.name', 'G');
+
+$graph->createVertex('first');
+```
 
 ### Vertex attributes
 

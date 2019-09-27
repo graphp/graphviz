@@ -307,8 +307,8 @@ class GraphViz
 
             $layout = $this->getLayoutEdge($currentEdge);
 
-            // this edge also points to the opposite direction => this is actually an undirected edge
-            if ($directed && $currentEdge->isConnection($currentTargetVertex, $currentStartVertex)) {
+            // this edge is not a loop and also points to the opposite direction => this is actually an undirected edge
+            if ($directed && $currentStartVertex !== $currentTargetVertex && $currentEdge->isConnection($currentTargetVertex, $currentStartVertex)) {
                 $layout['dir'] = 'none';
             }
             if ($layout) {

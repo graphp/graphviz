@@ -129,7 +129,43 @@ VIZ;
         $this->assertEquals($expected, $this->graphViz->createScript($graph));
     }
 
-    public function testGraphDirected()
+    public function testGraphWithSimpleEdgeUsesGraphWithSimpleEdgeDefinition()
+    {
+        // a -- b
+        $graph = new Graph();
+        $graph->createVertex('a')->createEdge($graph->createVertex('b'));
+
+        $expected = <<<VIZ
+graph {
+  "a" -- "b"
+}
+
+VIZ;
+
+        $this->assertEquals($expected, $this->graphViz->createScript($graph));
+    }
+
+    public function testGraphWithLoopUsesGraphWithSimpleLoopDefinition()
+    {
+        // a -- b -\
+        //      |  |
+        //      \--/
+        $graph = new Graph();
+        $graph->createVertex('a')->createEdge($graph->createVertex('b'));
+        $graph->getVertex('b')->createEdge($graph->getVertex('b'));
+
+        $expected = <<<VIZ
+graph {
+  "a" -- "b"
+  "b" -- "b"
+}
+
+VIZ;
+
+        $this->assertEquals($expected, $this->graphViz->createScript($graph));
+    }
+
+    public function testGraphDirectedUsesDigraph()
     {
         $graph = new Graph();
         $graph->createVertex('a')->createEdgeTo($graph->createVertex('b'));
@@ -144,7 +180,27 @@ VIZ;
         $this->assertEquals($expected, $this->graphViz->createScript($graph));
     }
 
-    public function testGraphMixed()
+    public function testGraphDirectedWithLoopUsesDigraphWithSimpleLoopDefinition()
+    {
+        // a -> b -\
+        //      ^  |
+        //      \--/
+        $graph = new Graph();
+        $graph->createVertex('a')->createEdgeTo($graph->createVertex('b'));
+        $graph->getVertex('b')->createEdgeTo($graph->getVertex('b'));
+
+        $expected = <<<VIZ
+digraph {
+  "a" -> "b"
+  "b" -> "b"
+}
+
+VIZ;
+
+        $this->assertEquals($expected, $this->graphViz->createScript($graph));
+    }
+
+    public function testGraphMixedUsesDigraphWithExplicitDirectionNoneForUndirectedEdges()
     {
         // a -> b -- c
         $graph = new Graph();
@@ -162,6 +218,25 @@ VIZ;
         $this->assertEquals($expected, $this->graphViz->createScript($graph));
     }
 
+    public function testGraphMixedWithDirectedLoopUsesDigraphWithoutDirectionForDirectedLoop()
+    {
+        // a -- b -\
+        //      ^  |
+        //      \--/
+        $graph = new Graph();
+        $graph->createVertex('a')->createEdge($graph->createVertex('b'));
+        $graph->getVertex('b')->createEdgeTo($graph->getVertex('b'));
+
+        $expected = <<<VIZ
+digraph {
+  "a" -> "b" [dir="none"]
+  "b" -> "b"
+}
+
+VIZ;
+
+        $this->assertEquals($expected, $this->graphViz->createScript($graph));
+    }
 
     public function testGraphUndirectedWithIsolatedVerticesFirst()
     {

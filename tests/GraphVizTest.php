@@ -1,6 +1,6 @@
 <?php
 
-use Fhaculty\Graph\Graph;
+use Graphp\Graph\Graph;
 use Graphp\GraphViz\GraphViz;
 use PHPUnit\Framework\TestCase;
 

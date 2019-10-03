@@ -2,9 +2,8 @@
 
 namespace Graphp\GraphViz;
 
-use Graphp\GraphViz\GraphViz;
-use Fhaculty\Graph\Graph;
-use Fhaculty\Graph\Exporter\ExporterInterface;
+use Graphp\Graph\Graph;
+use Graphp\Graph\Exporter\ExporterInterface;
 
 class Image implements ExporterInterface
 {

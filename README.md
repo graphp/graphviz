@@ -32,7 +32,7 @@ the actual layouting of the graph is left up to the excelent [GraphViz](http://w
 Once [installed](#install), let's build and display a sample graph:
 
 ````php
-$graph = new Fhaculty\Graph\Graph();
+$graph = new Graphp\Graph\Graph();
 
 $blue = $graph->createVertex('blue');
 $blue->setAttribute('graphviz.color', 'blue');
@@ -75,7 +75,7 @@ these GraphViz attributes are supported by this library and have to be assigned
 on the graph instance with the `graphviz.graph.` prefix like this:
 
 ```php
-$graph = new Fhaculty\Graph\Graph();
+$graph = new Graphp\Graph\Graph();
 $graph->setAttribute('graphviz.graph.bgcolor', 'transparent');
 ```
 
@@ -87,7 +87,7 @@ For example, the `rankdir` attribute can be used to change the orientation to
 horizontal mode (left to right) like this:
 
 ```php
-$graph = new Fhaculty\Graph\Graph();
+$graph = new Graphp\Graph\Graph();
 $graph->setAttribute('graphviz.graph.rankdir', 'LR');
 
 $hello = $graph->createVertex('hello');
@@ -106,7 +106,7 @@ to assign a `G` here, but usually there should be no need to assign this. Among
 others, this may be used as the title or tooltip in SVG output.
 
 ```php
-$graph = new Fhaculty\Graph\Graph();
+$graph = new Graphp\Graph\Graph();
 $graph->setAttribute('graphviz.name', 'G');
 
 $graph->createVertex('first');
@@ -120,7 +120,7 @@ library and have to be assigned on the respective vertex instance with the
 `graphviz.` prefix like this:
 
 ```php
-$graph = new Fhaculty\Graph\Graph();
+$graph = new Graphp\Graph\Graph();
 
 $blue = $graph->createVertex('blue');
 $blue->setAttribute('graphviz.color', 'blue');
@@ -131,7 +131,7 @@ these GraphViz attributes are supported by this library and have to be assigned
 on the graph instance with the `graphviz.node.` prefix like this:
 
 ```php
-$graph = new Fhaculty\Graph\Graph();
+$graph = new Graphp\Graph\Graph();
 $graph->setAttribute('graphviz.node.color', 'grey');
 
 $grey = $graph->createVertex('grey');
@@ -141,7 +141,7 @@ These default attributes can be overriden on each vertex instance by explicitly
 assigning the same attribute on the respective vertex instance like this:
 
 ```php
-$graph = new Fhaculty\Graph\Graph();
+$graph = new Graphp\Graph\Graph();
 $graph->setAttribute('graphviz.node.color', 'grey');
 
 $blue = $graph->createVertex('blue');
@@ -159,7 +159,7 @@ GraphViz attributes are supported by this library and have to be assigned on the
 respective edge instance with the `graphviz.` prefix like this:
 
 ```php
-$graph = new Fhaculty\Graph\Graph();
+$graph = new Graphp\Graph\Graph();
 
 $a = $graph->createVertex('a');
 $b = $graph->createVertex('b');
@@ -173,7 +173,7 @@ these GraphViz attributes are supported by this library and have to be assigned
 on the graph instance with the `graphviz.edge.` prefix like this:
 
 ```php
-$graph = new Fhaculty\Graph\Graph();
+$graph = new Graphp\Graph\Graph();
 $graph->setAttribute('graphviz.edge.color', 'grey');
 
 $a = $graph->createVertex('a');
@@ -186,7 +186,7 @@ These default attributes can be overriden on each edge instance by explicitly
 assigning the same attribute on the respective edge instance like this:
 
 ```php
-$graph = new Fhaculty\Graph\Graph();
+$graph = new Graphp\Graph\Graph();
 $graph->setAttribute('graphviz.edge.color', 'grey');
 
 $a = $graph->createVertex('a');
@@ -203,7 +203,7 @@ $blue->setAttribute('graphviz.color', 'blue');
 By default, GraphViz will always render the vertex ID as the label:
 
 ```php
-$graph = new Fhaculty\Graph\Graph();
+$graph = new Graphp\Graph\Graph();
 
 $blue = $graph->createVertex('blue');
 ```
@@ -213,7 +213,7 @@ If you assign a vertex balance, this library will automatically include a
 automatically assign `blue (+10)` as the label:
 
 ```php
-$graph = new Fhaculty\Graph\Graph();
+$graph = new Graphp\Graph\Graph();
 
 $blue = $graph->createVertex('blue');
 $blue->setBalance(10);
@@ -224,7 +224,7 @@ custom `label` attribute. Note that any balance value will still be appended
 like in the previous example.
 
 ```php
-$graph = new Fhaculty\Graph\Graph();
+$graph = new Graphp\Graph\Graph();
 
 $blue = $graph->createVertex('blue');
 $blue->setAttribute('graphviz.label', 'Hello world!');
@@ -239,7 +239,7 @@ so a `>` will appear as-is and will not be interpreted as HTML. See also
 By default, GraphViz will not render any label on an edge:
 
 ```php
-$graph = new Fhaculty\Graph\Graph();
+$graph = new Graphp\Graph\Graph();
 
 $a = $graph->createVertex('a');
 $b = $graph->createVertex('b');
@@ -252,7 +252,7 @@ include a `label` attribute that includes these values. The following example
 will automatically assign `100` as the label for the weighted edge:
 
 ```php
-$graph = new Fhaculty\Graph\Graph();
+$graph = new Graphp\Graph\Graph();
 
 $a = $graph->createVertex('a');
 $b = $graph->createVertex('b');
@@ -265,7 +265,7 @@ The following example will automatically assign `4/10` as the label for an edge
 with both flow and maximum capacity set:
 
 ```php
-$graph = new Fhaculty\Graph\Graph();
+$graph = new Graphp\Graph\Graph();
 
 $a = $graph->createVertex('a');
 $b = $graph->createVertex('b');
@@ -279,7 +279,7 @@ The following example will automatically assign `4/∞/100` as the label for a
 weighted edge with a flow and unlimited capacity:
 
 ```php
-$graph = new Fhaculty\Graph\Graph();
+$graph = new Graphp\Graph\Graph();
 
 $a = $graph->createVertex('a');
 $b = $graph->createVertex('b');
@@ -295,7 +295,7 @@ custom `label` attribute. Note that any flow, capacity or weight value will stil
 be appended like in the previous examples.
 
 ```php
-$graph = new Fhaculty\Graph\Graph();
+$graph = new Graphp\Graph\Graph();
 
 $a = $graph->createVertex('a');
 $b = $graph->createVertex('b');
@@ -317,7 +317,7 @@ prevent automatic quoting and escaping, all attribute values have to be passed
 to the static `GraphViz::raw()` helper like this:
 
 ```php
-$graph = new Fhaculty\Graph\Graph();
+$graph = new Graphp\Graph\Graph();
 
 $a = $graph->createVertex('Entity');
 $a->setAttribute('graphviz.shape', 'none');
@@ -357,7 +357,7 @@ automatic quoting and escaping, all attribute values have to be quoted manually
 and passed to the static `GraphViz::raw()` helper like this:
 
 ```php
-$graph = new Fhaculty\Graph\Graph();
+$graph = new Graphp\Graph\Graph();
 
 $a = $graph->createVertex();
 $a->setAttribute('graphviz.shape', 'Mrecord');

@@ -4,7 +4,7 @@ use Graphp\GraphViz\GraphViz;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$graph = new Fhaculty\Graph\Graph();
+$graph = new Graphp\Graph\Graph();
 
 $a = $graph->createVertex('Entity');
 $a->setAttribute('graphviz.shape', 'none');

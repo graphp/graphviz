@@ -2,7 +2,7 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$graph = new Fhaculty\Graph\Graph();
+$graph = new Graphp\Graph\Graph();
 
 $blue = $graph->createVertex('blue');
 $blue->setAttribute('graphviz.color', 'blue');

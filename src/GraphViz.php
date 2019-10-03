@@ -2,12 +2,12 @@
 
 namespace Graphp\GraphViz;
 
-use Fhaculty\Graph\Attribute\AttributeBagNamespaced;
-use Fhaculty\Graph\Edge\Base as Edge;
-use Fhaculty\Graph\Edge\Directed as EdgeDirected;
-use Fhaculty\Graph\Exception\UnexpectedValueException;
-use Fhaculty\Graph\Graph;
-use Fhaculty\Graph\Vertex;
+use Graphp\Graph\Attribute\AttributeBagNamespaced;
+use Graphp\Graph\Edge\Base as Edge;
+use Graphp\Graph\Edge\Directed as EdgeDirected;
+use Graphp\Graph\Exception\UnexpectedValueException;
+use Graphp\Graph\Graph;
+use Graphp\Graph\Vertex;
 
 class GraphViz
 {

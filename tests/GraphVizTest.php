@@ -71,6 +71,29 @@ VIZ;
         $this->assertEquals($expected, $this->graphViz->createScript($graph));
     }
 
+    public function testGraphIsolatedVerticesWithGroupsWillBeAddedToClusters()
+    {
+        $graph = new Graph();
+        $graph->createVertex('a')->setGroup(0);
+        $graph->createVertex('b')->setGroup(1)->setAttribute('graphviz.label', 'second');
+
+        $expected = <<<VIZ
+graph {
+  subgraph cluster_0 {
+    label = 0
+    "a"
+  }
+  subgraph cluster_1 {
+    label = 1
+    "b" [label="second"]
+  }
+}
+
+VIZ;
+
+        $this->assertEquals($expected, $this->graphViz->createScript($graph));
+    }
+
     public function testGraphDefaultAttributes()
     {
         $graph = new Graph();

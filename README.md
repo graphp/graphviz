@@ -1,6 +1,6 @@
 # graphp/graphviz [![Build Status](https://travis-ci.org/graphp/graphviz.svg?branch=master)](https://travis-ci.org/graphp/graphviz)
 
-GraphViz graph drawing for mathematical graph/network
+GraphViz graph drawing for the mathematical graph/network library GraPHP.
 
 The library supports visualizing graph images, including them into webpages,
 opening up images from within CLI applications and exporting them
@@ -379,26 +379,31 @@ See also the [examples](examples/).
 
 ## Install
 
-The recommended way to install this library is [through composer](http://getcomposer.org). [New to composer?](http://getcomposer.org/doc/00-intro.md)
+The recommended way to install this library is [through Composer](https://getcomposer.org).
+[New to Composer?](https://getcomposer.org/doc/00-intro.md)
 
-```JSON
-{
-    "require": {
-        "graphp/graphviz": "~0.2.0"
-    }
-}
+This will install the latest supported version:
+
+```bash
+$ composer require graphp/graphviz:^0.2.2
 ```
+
+See also the [CHANGELOG](CHANGELOG.md) for details about version upgrades.
 
 This project aims to run on any platform and thus does not require any PHP
 extensions and supports running on legacy PHP 5.3 through current PHP 7+ and
 HHVM.
 It's *highly recommended to use PHP 7+* for this project.
 
-In order to be able to use the [graph drawing feature](#graph-drawing) you'll have to
-install GraphViz (`dot` executable). Users of Debian/Ubuntu-based distributions may simply
-invoke `sudo apt-get install graphviz`, Windows users have to
-[download GraphViZ for Windows](http://www.graphviz.org/Download_windows.php) and remaining
-users should install from [GraphViz homepage](http://www.graphviz.org/Download.php).
+The graph drawing feature is powered by the excellent [GraphViz](https://www.graphviz.org)
+software. This means you'll have to install GraphViz (`dot` executable).
+The [Graphviz homepage](https://www.graphviz.org/download/) includes complete
+installation instructions for most common platforms, users of Debian/Ubuntu-based
+distributions may simply invoke:
+
+```bash
+$ sudo apt install graphviz
+```
 
 ## Tests
 

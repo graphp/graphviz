@@ -1,8 +1,8 @@
 {
     "name": "graphp/graphviz",
     "type": "library",
-    "description": "GraphViz graph drawing for mathematical graph/network",
-    "keywords": ["GraphViz", "graph drawing", "graph image", "dot output"],
+    "description": "GraphViz graph drawing for the mathematical graph/network library GraPHP.",
+    "keywords": ["GraphViz", "graph drawing", "graph image", "dot output", "GraPHP"],
     "homepage": "https://github.com/graphp/graphviz",
     "license": "MIT",
     "autoload": {

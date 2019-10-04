@@ -2,13 +2,10 @@
 
 namespace Graphp\GraphViz;
 
-use Graphp\Algorithms\Directed;
-use Graphp\Algorithms\Groups;
-use Graphp\Algorithms\Degree;
-use Fhaculty\Graph\Exception\UnexpectedValueException;
-use Fhaculty\Graph\Edge\Base as Edge;
-use \stdClass;
 use Fhaculty\Graph\Attribute\AttributeBagNamespaced;
+use Fhaculty\Graph\Edge\Base as Edge;
+use Fhaculty\Graph\Edge\Directed as EdgeDirected;
+use Fhaculty\Graph\Exception\UnexpectedValueException;
 use Fhaculty\Graph\Graph;
 use Fhaculty\Graph\Vertex;
 
@@ -225,8 +222,13 @@ class GraphViz
      */
     public function createScript(Graph $graph)
     {
-        $alg = new Directed($graph);
-        $directed = $alg->hasDirected();
+        $directed = false;
+        foreach ($graph->getEdges() as $edge) {
+            if ($edge instanceof EdgeDirected) {
+                $directed = true;
+                break;
+            }
+        }
 
         /*
          * The website [http://www.graphviz.org/content/dot-language] uses the term `ID` when displaying
@@ -255,22 +257,23 @@ class GraphViz
             }
         }
 
-        $alg = new Groups($graph);
-        // only append group number to vertex label if there are at least 2 different groups
-        $showGroups = ($alg->getNumberOfGroups() > 1);
+        $groups = array();
+        foreach ($graph->getVertices()->getMap() as $vid => $vertex) {
+            $groups[$vertex->getGroup()][$vid] = $vertex;
+        }
 
-        if ($showGroups) {
-            $gid = 0;
+        // only cluster vertices into groups if there are at least 2 different groups
+        if (count($groups) > 1) {
             $indent = str_repeat($this->formatIndent, 2);
             // put each group of vertices in a separate subgraph cluster
-            foreach ($alg->getGroups() as $group) {
-                $script .= $this->formatIndent . 'subgraph cluster_' . $gid++ . ' {' . self::EOL .
+            foreach ($groups as $group => $vertices) {
+                $script .= $this->formatIndent . 'subgraph cluster_' . $group . ' {' . self::EOL .
                            $indent . 'label = ' . $this->escape($group) . self::EOL;
-                foreach($alg->getVerticesGroup($group)->getMap() as $vid => $vertex) {
+                foreach ($vertices as $vid => $vertex) {
                     $layout = $this->getLayoutVertex($vertex);
 
                     $script .= $indent . $this->escapeId($vid);
-                    if($layout){
+                    if ($layout) {
                         $script .= ' ' . $this->escapeAttributes($layout);
                     }
                     $script .= self::EOL;
@@ -278,16 +281,14 @@ class GraphViz
                 $script .= '  }' . self::EOL;
             }
         } else {
-            $alg = new Degree($graph);
-
             // explicitly add all isolated vertices (vertices with no edges) and vertices with special layout set
             // other vertices wil be added automatically due to below edge definitions
             foreach ($graph->getVertices()->getMap() as $vid => $vertex){
                 $layout = $this->getLayoutVertex($vertex);
 
-                if($layout || $alg->isVertexIsolated($vertex)){
+                if ($layout || $vertex->getEdges()->isEmpty()) {
                     $script .= $this->formatIndent . $this->escapeId($vid);
-                    if($layout){
+                    if ($layout) {
                         $script .= ' ' . $this->escapeAttributes($layout);
                     }
                     $script .= self::EOL;
@@ -337,7 +338,7 @@ class GraphViz
     public static function escape($id)
     {
         // see raw()
-        if ($id instanceof stdClass && isset($id->string)) {
+        if ($id instanceof \stdClass && isset($id->string)) {
             return $id->string;
         }
         // see @link: There is no semantic difference between abc_2 and "abc_2"
@@ -377,7 +378,7 @@ class GraphViz
      * create a raw string representation, i.e. do NOT escape the given string when used in graphviz output
      *
      * @param  string   $string
-     * @return StdClass
+     * @return \stdClass
      * @see GraphViz::escape()
      */
     public static function raw($string)

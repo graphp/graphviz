@@ -16,7 +16,7 @@ $a->setAttribute('graphviz.label', GraphViz::raw('<
 </table>>'));
 
 $b = $graph->createVertex('Block');
-$b->createEdgeTo($a);
+$graph->createEdgeDirected($b, $a);
 $b->setAttribute('graphviz.shape', 'none');
 $b->setAttribute('graphviz.label', GraphViz::raw('<
 <table cellspacing="0" border="0" cellborder="1">

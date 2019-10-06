@@ -9,7 +9,7 @@ $graph->setAttribute('graphviz.graph.rankdir', 'LR');
 
 $hello = $graph->createVertex('hello');
 $world = $graph->createVertex('wörld');
-$hello->createEdgeTo($world);
+$graph->createEdgeDirected($hello, $world);
 
 $graphviz = new Graphp\GraphViz\GraphViz();
 $graphviz->setFormat('svg');

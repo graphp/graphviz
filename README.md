@@ -40,7 +40,7 @@ $blue->setAttribute('graphviz.color', 'blue');
 $red = $graph->createVertex('red');
 $red->setAttribute('graphviz.color', 'red');
 
-$edge = $blue->createEdgeTo($red);
+$edge = $graph->createEdgeDirected($blue, $red);
 $edge->setAttribute('graphviz.color', 'grey');
 
 $graphviz = new Graphp\GraphViz\GraphViz();
@@ -92,7 +92,7 @@ $graph->setAttribute('graphviz.graph.rankdir', 'LR');
 
 $hello = $graph->createVertex('hello');
 $world = $graph->createVertex('wörld');
-$hello->createEdgeTo($world);
+$graph->createEdgeDirected($hello, $world);
 ```
 
 ![html graph example](examples/02-html.png)
@@ -164,7 +164,7 @@ $graph = new Graphp\Graph\Graph();
 $a = $graph->createVertex('a');
 $b = $graph->createVertex('b');
 
-$blue = $a->createEdgeTo($b);
+$blue = $graph->createEdgeDirected($a, $b);
 $blue->setAttribute('graphviz.color', 'blue');
 ```
 
@@ -179,7 +179,7 @@ $graph->setAttribute('graphviz.edge.color', 'grey');
 $a = $graph->createVertex('a');
 $b = $graph->createVertex('b');
 
-$grey = $a->createEdgeTo($b);
+$grey = $graph->createEdgeDirected($a, $b);
 ```
 
 These default attributes can be overriden on each edge instance by explicitly
@@ -192,7 +192,7 @@ $graph->setAttribute('graphviz.edge.color', 'grey');
 $a = $graph->createVertex('a');
 $b = $graph->createVertex('b');
 
-$blue = $a->createEdgeTo($b);
+$blue = $graph->createEdgeDirected($a, $b);
 $blue->setAttribute('graphviz.color', 'blue');
 ```
 
@@ -244,7 +244,7 @@ $graph = new Graphp\Graph\Graph();
 $a = $graph->createVertex('a');
 $b = $graph->createVertex('b');
 
-$edge = $a->createEdgeTo($b);
+$edge = $graph->createEdgeDirected($a, $b);
 ```
 
 If you assign an edge flow, capacity or weight, this library will automatically
@@ -257,7 +257,7 @@ $graph = new Graphp\Graph\Graph();
 $a = $graph->createVertex('a');
 $b = $graph->createVertex('b');
 
-$edge = $a->createEdgeTo($b);
+$edge = $graph->createEdgeDirected($a, $b);
 $edge->setWeight(100);
 ```
 
@@ -270,7 +270,7 @@ $graph = new Graphp\Graph\Graph();
 $a = $graph->createVertex('a');
 $b = $graph->createVertex('b');
 
-$edge = $a->createEdgeTo($b);
+$edge = $graph->createEdgeDirected($a, $b);
 $edge->setFlow(4);
 $edge->setCapacity(10);
 ```
@@ -284,7 +284,7 @@ $graph = new Graphp\Graph\Graph();
 $a = $graph->createVertex('a');
 $b = $graph->createVertex('b');
 
-$edge = $a->createEdgeTo($b);
+$edge = $graph->createEdgeDirected($a, $b);
 $edge->setFlow(4);
 $edge->setCapacity(null);
 $edge->setWeight(100);
@@ -300,7 +300,7 @@ $graph = new Graphp\Graph\Graph();
 $a = $graph->createVertex('a');
 $b = $graph->createVertex('b');
 
-$edge = $a->createEdgeTo($b);
+$edge = $graph->createEdgeDirected($a, $b);
 $edge->setAttribute('graphviz.label', 'important');
 ```
 
@@ -329,7 +329,7 @@ $a->setAttribute('graphviz.label', GraphViz::raw('<
 </table>>'));
 
 $b = $graph->createVertex('Block');
-$b->createEdgeTo($a);
+$graph->createEdgeDirected($b, $a);
 $b->setAttribute('graphviz.shape', 'none');
 $b->setAttribute('graphviz.label', GraphViz::raw('<
 <table cellspacing="0" border="0" cellborder="1">
@@ -368,7 +368,7 @@ $b->setAttribute('graphviz.shape', 'Mrecord');
 $b->setAttribute('graphviz.label', GraphViz::raw('"<f0> left |<f1> middle |<right> right"'));
 
 // a:middle -> b:right
-$edge = $a->createEdgeTo($b);
+$edge = $graph->createEdgeDirected($a, $b);
 $edge->setAttribute('graphviz.tailport', 'middle');
 $edge->setAttribute('graphviz.headport', 'right');
 ```

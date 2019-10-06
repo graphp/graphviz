@@ -15,7 +15,7 @@ $b->setAttribute('graphviz.shape', 'Mrecord');
 $b->setAttribute('graphviz.label', GraphViz::raw('"<f0> left |<f1> middle |<right> right"'));
 
 // a:middle -> b:right
-$edge = $a->createEdgeTo($b);
+$edge = $graph->createEdgeDirected($a, $b);
 $edge->setAttribute('graphviz.tailport', 'middle');
 $edge->setAttribute('graphviz.headport', 'right');
 

@@ -11,7 +11,7 @@ $a->setAttribute('graphviz.shape', 'record');
 $a->setAttribute('graphviz.label', GraphViz::raw('"{\N||+ touch()}"'));
 
 $b = $graph->createVertex('Block');
-$b->createEdgeTo($a);
+$graph->createEdgeDirected($b, $a);
 $b->setAttribute('graphviz.shape', 'record');
 $b->setAttribute('graphviz.label', GraphViz::raw('"{\N|- size:int|+ touch()}"'));
 

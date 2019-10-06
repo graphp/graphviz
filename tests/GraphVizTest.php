@@ -156,7 +156,7 @@ VIZ;
     {
         // a -- b
         $graph = new Graph();
-        $graph->createVertex('a')->createEdge($graph->createVertex('b'));
+        $graph->createEdgeUndirected($graph->createVertex('a'), $graph->createVertex('b'));
 
         $expected = <<<VIZ
 graph {
@@ -174,8 +174,8 @@ VIZ;
         //      |  |
         //      \--/
         $graph = new Graph();
-        $graph->createVertex('a')->createEdge($graph->createVertex('b'));
-        $graph->getVertex('b')->createEdge($graph->getVertex('b'));
+        $graph->createEdgeUndirected($graph->createVertex('a'), $graph->createVertex('b'));
+        $graph->createEdgeUndirected($graph->getVertex('b'), $graph->getVertex('b'));
 
         $expected = <<<VIZ
 graph {
@@ -190,8 +190,9 @@ VIZ;
 
     public function testGraphDirectedUsesDigraph()
     {
+        // a -> b
         $graph = new Graph();
-        $graph->createVertex('a')->createEdgeTo($graph->createVertex('b'));
+        $graph->createEdgeDirected($graph->createVertex('a'), $graph->createVertex('b'));
 
         $expected = <<<VIZ
 digraph {
@@ -209,8 +210,8 @@ VIZ;
         //      ^  |
         //      \--/
         $graph = new Graph();
-        $graph->createVertex('a')->createEdgeTo($graph->createVertex('b'));
-        $graph->getVertex('b')->createEdgeTo($graph->getVertex('b'));
+        $graph->createEdgeDirected($graph->createVertex('a'), $graph->createVertex('b'));
+        $graph->createEdgeDirected($graph->getVertex('b'), $graph->getVertex('b'));
 
         $expected = <<<VIZ
 digraph {
@@ -227,8 +228,8 @@ VIZ;
     {
         // a -> b -- c
         $graph = new Graph();
-        $graph->createVertex('a')->createEdgeTo($graph->createVertex('b'));
-        $graph->createVertex('c')->createEdge($graph->getVertex('b'));
+        $graph->createEdgeDirected($graph->createVertex('a'), $graph->createVertex('b'));
+        $graph->createEdgeUndirected($graph->createVertex('c'), $graph->getVertex('b'));
 
         $expected = <<<VIZ
 digraph {
@@ -247,8 +248,8 @@ VIZ;
         //      ^  |
         //      \--/
         $graph = new Graph();
-        $graph->createVertex('a')->createEdge($graph->createVertex('b'));
-        $graph->getVertex('b')->createEdgeTo($graph->getVertex('b'));
+        $graph->createEdgeUndirected($graph->createVertex('a'), $graph->createVertex('b'));
+        $graph->createEdgeDirected($graph->getVertex('b'), $graph->getVertex('b'));
 
         $expected = <<<VIZ
 digraph {
@@ -266,8 +267,8 @@ VIZ;
         // a -- b -- c   d
         $graph = new Graph();
         $graph->createVertices(array('a', 'b', 'c', 'd'));
-        $graph->getVertex('a')->createEdge($graph->getVertex('b'));
-        $graph->getVertex('b')->createEdge($graph->getVertex('c'));
+        $graph->createEdgeUndirected($graph->getVertex('a'), $graph->getVertex('b'));
+        $graph->createEdgeUndirected($graph->getVertex('b'), $graph->getVertex('c'));
 
         $expected = <<<VIZ
 graph {
@@ -307,11 +308,11 @@ VIZ;
     public function testEdgeLayoutAtributes()
     {
         $graph = new Graph();
-        $graph->createVertex('1a')->createEdge($graph->createVertex('1b'));
-        $graph->createVertex('2a')->createEdge($graph->createVertex('2b'))->setAttribute('graphviz.numeric', 20);
-        $graph->createVertex('3a')->createEdge($graph->createVertex('3b'))->setAttribute('graphviz.textual', "forty");
-        $graph->createVertex('4a')->createEdge($graph->createVertex('4b'))->getAttributeBag()->setAttributes(array('graphviz.1' => 1, 'graphviz.2' => 2));
-        $graph->createVertex('5a')->createEdge($graph->createVertex('5b'))->getAttributeBag()->setAttributes(array('graphviz.a' => 'b', 'graphviz.c' => 'd'));
+        $graph->createEdgeUndirected($graph->createVertex('1a'), $graph->createVertex('1b'));
+        $graph->createEdgeUndirected($graph->createVertex('2a'), $graph->createVertex('2b'))->setAttribute('graphviz.numeric', 20);
+        $graph->createEdgeUndirected($graph->createVertex('3a'), $graph->createVertex('3b'))->setAttribute('graphviz.textual', "forty");
+        $graph->createEdgeUndirected($graph->createVertex('4a'), $graph->createVertex('4b'))->getAttributeBag()->setAttributes(array('graphviz.1' => 1, 'graphviz.2' => 2));
+        $graph->createEdgeUndirected($graph->createVertex('5a'), $graph->createVertex('5b'))->getAttributeBag()->setAttributes(array('graphviz.a' => 'b', 'graphviz.c' => 'd'));
 
         $expected = <<<VIZ
 graph {
@@ -330,13 +331,13 @@ VIZ;
     public function testEdgeLabels()
     {
         $graph = new Graph();
-        $graph->createVertex('1a')->createEdge($graph->createVertex('1b'));
-        $graph->createVertex('2a')->createEdge($graph->createVertex('2b'))->setWeight(20);
-        $graph->createVertex('3a')->createEdge($graph->createVertex('3b'))->setCapacity(30);
-        $graph->createVertex('4a')->createEdge($graph->createVertex('4b'))->setFlow(40);
-        $graph->createVertex('5a')->createEdge($graph->createVertex('5b'))->setFlow(50)->setCapacity(60);
-        $graph->createVertex('6a')->createEdge($graph->createVertex('6b'))->setFlow(60)->setCapacity(70)->setWeight(80);
-        $graph->createVertex('7a')->createEdge($graph->createVertex('7b'))->setFlow(70)->setAttribute('graphviz.label', 'prefixed');
+        $graph->createEdgeUndirected($graph->createVertex('1a'), $graph->createVertex('1b'));
+        $graph->createEdgeUndirected($graph->createVertex('2a'), $graph->createVertex('2b'))->setWeight(20);
+        $graph->createEdgeUndirected($graph->createVertex('3a'), $graph->createVertex('3b'))->setCapacity(30);
+        $graph->createEdgeUndirected($graph->createVertex('4a'), $graph->createVertex('4b'))->setFlow(40);
+        $graph->createEdgeUndirected($graph->createVertex('5a'), $graph->createVertex('5b'))->setFlow(50)->setCapacity(60);
+        $graph->createEdgeUndirected($graph->createVertex('6a'), $graph->createVertex('6b'))->setFlow(60)->setCapacity(70)->setWeight(80);
+        $graph->createEdgeUndirected($graph->createVertex('7a'), $graph->createVertex('7b'))->setFlow(70)->setAttribute('graphviz.label', 'prefixed');
 
         $expected = <<<VIZ
 graph {

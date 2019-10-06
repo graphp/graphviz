@@ -10,6 +10,7 @@ $blue->setAttribute('graphviz.color', 'blue');
 $red = $graph->createVertex('red');
 $red->setAttribute('graphviz.color', 'red');
 
+$edge = $graph->createEdgeDirected($blue, $red);
 $edge = $blue->createEdgeTo($red);
 $edge->setAttribute('graphviz.color', 'grey');
 

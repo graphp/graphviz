@@ -10,7 +10,7 @@
     },
     "require": {
         "php": ">=5.3.0",
-        "graphp/graph": "dev-master#9ce805c as 1.0.0"
+        "graphp/graph": "dev-master#412d0b5 as 1.0.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.4 || ^5.7 || ^4.8.35"

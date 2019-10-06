@@ -3,9 +3,8 @@
 namespace Graphp\GraphViz;
 
 use Graphp\Graph\Graph;
-use Graphp\Graph\Exporter\ExporterInterface;
 
-class Image implements ExporterInterface
+class Image
 {
     private $graphviz;
 

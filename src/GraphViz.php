@@ -3,8 +3,8 @@
 namespace Graphp\GraphViz;
 
 use Graphp\Graph\Attribute\AttributeBagNamespaced;
-use Graphp\Graph\Edge\Base as Edge;
-use Graphp\Graph\Edge\Directed as EdgeDirected;
+use Graphp\Graph\Edge;
+use Graphp\Graph\EdgeDirected;
 use Graphp\Graph\Exception\UnexpectedValueException;
 use Graphp\Graph\Graph;
 use Graphp\Graph\Vertex;

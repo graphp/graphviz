@@ -74,8 +74,8 @@ VIZ;
     public function testGraphIsolatedVerticesWithGroupsWillBeAddedToClusters()
     {
         $graph = new Graph();
-        $graph->createVertex('a')->setGroup(0);
-        $graph->createVertex('b')->setGroup(1)->setAttribute('graphviz.label', 'second');
+        $graph->createVertex('a')->setAttribute('group', 0);
+        $graph->createVertex('b')->setAttribute('group', 'foo bar')->setAttribute('graphviz.label', 'second');
 
         $expected = <<<VIZ
 graph {
@@ -84,7 +84,7 @@ graph {
     "a"
   }
   subgraph cluster_1 {
-    label = 1
+    label = "foo bar"
     "b" [label="second"]
   }
 }
@@ -285,11 +285,11 @@ VIZ;
     public function testVertexLabels()
     {
         $graph = new Graph();
-        $graph->createVertex('a')->setBalance(1);
-        $graph->createVertex('b')->setBalance(0);
-        $graph->createVertex('c')->setBalance(-1);
+        $graph->createVertex('a')->setAttribute('balance', 1);
+        $graph->createVertex('b')->setAttribute('balance', 0);
+        $graph->createVertex('c')->setAttribute('balance', -1);
         $graph->createVertex('d')->setAttribute('graphviz.label', 'test');
-        $graph->createVertex('e')->setBalance(2)->setAttribute('graphviz.label', 'unnamed');
+        $graph->createVertex('e')->setAttribute('balance', 2)->setAttribute('graphviz.label', 'unnamed');
 
         $expected = <<<VIZ
 graph {
@@ -332,12 +332,12 @@ VIZ;
     {
         $graph = new Graph();
         $graph->createEdgeUndirected($graph->createVertex('1a'), $graph->createVertex('1b'));
-        $graph->createEdgeUndirected($graph->createVertex('2a'), $graph->createVertex('2b'))->setWeight(20);
-        $graph->createEdgeUndirected($graph->createVertex('3a'), $graph->createVertex('3b'))->setCapacity(30);
-        $graph->createEdgeUndirected($graph->createVertex('4a'), $graph->createVertex('4b'))->setFlow(40);
-        $graph->createEdgeUndirected($graph->createVertex('5a'), $graph->createVertex('5b'))->setFlow(50)->setCapacity(60);
-        $graph->createEdgeUndirected($graph->createVertex('6a'), $graph->createVertex('6b'))->setFlow(60)->setCapacity(70)->setWeight(80);
-        $graph->createEdgeUndirected($graph->createVertex('7a'), $graph->createVertex('7b'))->setFlow(70)->setAttribute('graphviz.label', 'prefixed');
+        $graph->createEdgeUndirected($graph->createVertex('2a'), $graph->createVertex('2b'))->setAttribute('weight', 20);
+        $graph->createEdgeUndirected($graph->createVertex('3a'), $graph->createVertex('3b'))->setAttribute('capacity', 30);
+        $graph->createEdgeUndirected($graph->createVertex('4a'), $graph->createVertex('4b'))->setAttribute('flow', 40);
+        $graph->createEdgeUndirected($graph->createVertex('5a'), $graph->createVertex('5b'))->setAttribute('flow', 50)->setAttribute('capacity', 60);
+        $graph->createEdgeUndirected($graph->createVertex('6a'), $graph->createVertex('6b'))->setAttribute('flow', 60)->setAttribute('capacity', 70)->setAttribute('weight', 80);
+        $graph->createEdgeUndirected($graph->createVertex('7a'), $graph->createVertex('7b'))->setAttribute('flow', 70)->setAttribute('graphviz.label', 'prefixed');
 
         $expected = <<<VIZ
 graph {

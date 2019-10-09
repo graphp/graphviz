@@ -35,6 +35,13 @@ class GraphViz
      */
     private $formatIndent = '  ';
 
+    private $attributeFlow = 'flow';
+    private $attributeCapacity = 'capacity';
+    private $attributeWeight = 'weight';
+
+    private $attributeGroup = 'group';
+    private $attributeBalance = 'balance';
+
     const DELAY_OPEN = 2.0;
 
     const EOL = PHP_EOL;
@@ -259,15 +266,16 @@ class GraphViz
 
         $groups = array();
         foreach ($graph->getVertices()->getMap() as $vid => $vertex) {
-            $groups[$vertex->getGroup()][$vid] = $vertex;
+            $groups[$vertex->getAttribute('group', 0)][$vid] = $vertex;
         }
 
         // only cluster vertices into groups if there are at least 2 different groups
         if (count($groups) > 1) {
             $indent = str_repeat($this->formatIndent, 2);
+            $gid = 0;
             // put each group of vertices in a separate subgraph cluster
             foreach ($groups as $group => $vertices) {
-                $script .= $this->formatIndent . 'subgraph cluster_' . $group . ' {' . self::EOL .
+                $script .= $this->formatIndent . 'subgraph cluster_' . $gid++ . ' {' . self::EOL .
                            $indent . 'label = ' . $this->escape($group) . self::EOL;
                 foreach ($vertices as $vid => $vertex) {
                     $layout = $this->getLayoutVertex($vertex);
@@ -391,12 +399,12 @@ class GraphViz
         $bag = new AttributeBagNamespaced($vertex, 'graphviz.');
         $layout = $bag->getAttributes();
 
-        $balance = $vertex->getBalance();
-        if($balance !== NULL){
-            if($balance > 0){
+        $balance = $vertex->getAttribute($this->attributeBalance);
+        if ($balance !== NULL) {
+            if ($balance > 0) {
                 $balance = '+' . $balance;
             }
-            if(!isset($layout['label'])){
+            if (!isset($layout['label'])) {
                 $layout['label'] = $vertex->getId();
             }
             $layout['label'] .= ' (' . $balance . ')';
@@ -413,8 +421,8 @@ class GraphViz
         // use flow/capacity/weight as edge label
         $label = NULL;
 
-        $flow = $edge->getFlow();
-        $capacity = $edge->getCapacity();
+        $flow = $edge->getAttribute($this->attributeFlow);
+        $capacity = $edge->getAttribute($this->attributeCapacity);
         // flow is set
         if ($flow !== NULL) {
             // NULL capacity = infinite capacity
@@ -424,7 +432,7 @@ class GraphViz
             $label = '0/' . $capacity;
         }
 
-        $weight = $edge->getWeight();
+        $weight = $edge->getAttribute($this->attributeWeight);
         // weight is set
         if ($weight !== NULL) {
             if ($label === NULL) {

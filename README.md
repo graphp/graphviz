@@ -208,15 +208,15 @@ $graph = new Graphp\Graph\Graph();
 $blue = $graph->createVertex('blue');
 ```
 
-If you assign a vertex balance, this library will automatically include a
-`label` attribute that includes the balance value. The following example will
-automatically assign `blue (+10)` as the label:
+If you assign a `balance` attribute to a vertex, this library will automatically
+include a `label` attribute that includes the balance value. The following
+example will automatically assign `blue (+10)` as the label:
 
 ```php
 $graph = new Graphp\Graph\Graph();
 
 $blue = $graph->createVertex('blue');
-$blue->setBalance(10);
+$blue->setAttribute('balance', 10);
 ```
 
 You can use [vertex attributes](#vertex-attributes) to explicitly assign a
@@ -247,9 +247,10 @@ $b = $graph->createVertex('b');
 $edge = $graph->createEdgeDirected($a, $b);
 ```
 
-If you assign an edge flow, capacity or weight, this library will automatically
-include a `label` attribute that includes these values. The following example
-will automatically assign `100` as the label for the weighted edge:
+If you assign a `flow`, `capacity` or `weight` attribute to an edge, this library
+will automatically include a `label` attribute that includes these values. The
+following example will automatically assign `100` as the label for the weighted
+edge:
 
 ```php
 $graph = new Graphp\Graph\Graph();
@@ -258,7 +259,7 @@ $a = $graph->createVertex('a');
 $b = $graph->createVertex('b');
 
 $edge = $graph->createEdgeDirected($a, $b);
-$edge->setWeight(100);
+$edge->setAttribute('weight', 100);
 ```
 
 The following example will automatically assign `4/10` as the label for an edge
@@ -271,8 +272,8 @@ $a = $graph->createVertex('a');
 $b = $graph->createVertex('b');
 
 $edge = $graph->createEdgeDirected($a, $b);
-$edge->setFlow(4);
-$edge->setCapacity(10);
+$edge->setAttribute('flow', 4);
+$edge->setAttribute('capacity', 10);
 ```
 
 The following example will automatically assign `4/∞/100` as the label for a
@@ -285,9 +286,9 @@ $a = $graph->createVertex('a');
 $b = $graph->createVertex('b');
 
 $edge = $graph->createEdgeDirected($a, $b);
-$edge->setFlow(4);
-$edge->setCapacity(null);
-$edge->setWeight(100);
+$edge->setAttribute('flow', 4);
+$edge->setAttribute('capacity', null);
+$edge->setAttribute('weight', 100);
 ```
 
 You can use [edge attributes](#edge-attributes) to explicitly assign any

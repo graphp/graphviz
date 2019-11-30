@@ -34,10 +34,12 @@ Once [installed](#install), let's build and display a sample graph:
 ````php
 $graph = new Graphp\Graph\Graph();
 
-$blue = $graph->createVertex('blue');
+$blue = $graph->createVertex();
+$blue->setAttribute('id', 'blue');
 $blue->setAttribute('graphviz.color', 'blue');
 
-$red = $graph->createVertex('red');
+$red = $graph->createVertex();
+$red->setAttribute('id', 'red');
 $red->setAttribute('graphviz.color', 'red');
 
 $edge = $graph->createEdgeDirected($blue, $red);
@@ -90,8 +92,10 @@ horizontal mode (left to right) like this:
 $graph = new Graphp\Graph\Graph();
 $graph->setAttribute('graphviz.graph.rankdir', 'LR');
 
-$hello = $graph->createVertex('hello');
-$world = $graph->createVertex('wörld');
+$hello = $graph->createVertex();
+$hello->setAttribute('id', 'hello');
+$world = $graph->createVertex();
+$world->setAttribute('id', 'wörld');
 $graph->createEdgeDirected($hello, $world);
 ```
 
@@ -109,7 +113,7 @@ others, this may be used as the title or tooltip in SVG output.
 $graph = new Graphp\Graph\Graph();
 $graph->setAttribute('graphviz.name', 'G');
 
-$graph->createVertex('first');
+$graph->createVertex();
 ```
 
 ### Vertex attributes
@@ -122,7 +126,7 @@ library and have to be assigned on the respective vertex instance with the
 ```php
 $graph = new Graphp\Graph\Graph();
 
-$blue = $graph->createVertex('blue');
+$blue = $graph->createVertex();
 $blue->setAttribute('graphviz.color', 'blue');
 ```
 
@@ -134,7 +138,7 @@ on the graph instance with the `graphviz.node.` prefix like this:
 $graph = new Graphp\Graph\Graph();
 $graph->setAttribute('graphviz.node.color', 'grey');
 
-$grey = $graph->createVertex('grey');
+$grey = $graph->createVertex();
 ```
 
 These default attributes can be overriden on each vertex instance by explicitly
@@ -144,7 +148,7 @@ assigning the same attribute on the respective vertex instance like this:
 $graph = new Graphp\Graph\Graph();
 $graph->setAttribute('graphviz.node.color', 'grey');
 
-$blue = $graph->createVertex('blue');
+$blue = $graph->createVertex();
 $blue->setAttribute('graphviz.color', 'blue');
 ```
 
@@ -161,8 +165,8 @@ respective edge instance with the `graphviz.` prefix like this:
 ```php
 $graph = new Graphp\Graph\Graph();
 
-$a = $graph->createVertex('a');
-$b = $graph->createVertex('b');
+$a = $graph->createVertex();
+$b = $graph->createVertex();
 
 $blue = $graph->createEdgeDirected($a, $b);
 $blue->setAttribute('graphviz.color', 'blue');
@@ -176,8 +180,8 @@ on the graph instance with the `graphviz.edge.` prefix like this:
 $graph = new Graphp\Graph\Graph();
 $graph->setAttribute('graphviz.edge.color', 'grey');
 
-$a = $graph->createVertex('a');
-$b = $graph->createVertex('b');
+$a = $graph->createVertex();
+$b = $graph->createVertex();
 
 $grey = $graph->createEdgeDirected($a, $b);
 ```
@@ -189,8 +193,8 @@ assigning the same attribute on the respective edge instance like this:
 $graph = new Graphp\Graph\Graph();
 $graph->setAttribute('graphviz.edge.color', 'grey');
 
-$a = $graph->createVertex('a');
-$b = $graph->createVertex('b');
+$a = $graph->createVertex();
+$b = $graph->createVertex();
 
 $blue = $graph->createEdgeDirected($a, $b);
 $blue->setAttribute('graphviz.color', 'blue');
@@ -200,22 +204,40 @@ $blue->setAttribute('graphviz.color', 'blue');
 
 ### Vertex labels
 
-By default, GraphViz will always render the vertex ID as the label:
+By default, GraphViz will always render the vertex ID as the label.
+If you do not assign an explicit `id` attribute to a vertex, this library will
+automatically assign a vertex ID starting at `1` in the DOT output and GraphViz
+will automatically render this vertex ID as the label. The following example
+will automatically assign `1` and `2` as the label:
 
 ```php
 $graph = new Graphp\Graph\Graph();
 
-$blue = $graph->createVertex('blue');
+$v1 = $graph->createVertex();
+$v2 = $graph->createVertex();
+```
+
+If you assign an `id` attribute to a vertex, this library will automatically
+use it as the vertex ID in the DOT output and GraphViz will automatically render
+this vertex ID as the label. The following example will automatically assign
+`blue` as the label:
+
+```php
+$graph = new Graphp\Graph\Graph();
+
+$a = $graph->createVertex();
+$a->setAttribute('id', 'blue');
 ```
 
 If you assign a `balance` attribute to a vertex, this library will automatically
-include a `label` attribute that includes the balance value. The following
-example will automatically assign `blue (+10)` as the label:
+include a `label` attribute that appends the balance value in parenthesis. The
+following example will automatically assign `blue (+10)` as the label:
 
 ```php
 $graph = new Graphp\Graph\Graph();
 
-$blue = $graph->createVertex('blue');
+$blue = $graph->createVertex();
+$blue->setAttribute('id', 'blue');
 $blue->setAttribute('balance', 10);
 ```
 
@@ -226,13 +248,18 @@ like in the previous example.
 ```php
 $graph = new Graphp\Graph\Graph();
 
-$blue = $graph->createVertex('blue');
+$blue = $graph->createVertex();
+$blue->setAttribute('id', 'blue');
 $blue->setAttribute('graphviz.label', 'Hello world!');
 ```
 
 Note that all [attributes](#attributes) will be quoted and escaped by default,
 so a `>` will appear as-is and will not be interpreted as HTML. See also
 [HTML-like labels](#html-like-labels) below for more details.
+
+Also note that you should either define *no* vertex IDs at all or *all* vertex
+IDs. If you only define *some* vertex IDs, the automatic numbering may yield a
+vertex ID that is already used explicitly and overwrite some of its settings.
 
 ### Edge labels
 
@@ -241,8 +268,8 @@ By default, GraphViz will not render any label on an edge:
 ```php
 $graph = new Graphp\Graph\Graph();
 
-$a = $graph->createVertex('a');
-$b = $graph->createVertex('b');
+$a = $graph->createVertex();
+$b = $graph->createVertex();
 
 $edge = $graph->createEdgeDirected($a, $b);
 ```
@@ -255,8 +282,8 @@ edge:
 ```php
 $graph = new Graphp\Graph\Graph();
 
-$a = $graph->createVertex('a');
-$b = $graph->createVertex('b');
+$a = $graph->createVertex();
+$b = $graph->createVertex();
 
 $edge = $graph->createEdgeDirected($a, $b);
 $edge->setAttribute('weight', 100);
@@ -268,8 +295,8 @@ with both flow and maximum capacity set:
 ```php
 $graph = new Graphp\Graph\Graph();
 
-$a = $graph->createVertex('a');
-$b = $graph->createVertex('b');
+$a = $graph->createVertex();
+$b = $graph->createVertex();
 
 $edge = $graph->createEdgeDirected($a, $b);
 $edge->setAttribute('flow', 4);
@@ -282,8 +309,8 @@ weighted edge with a flow and unlimited capacity:
 ```php
 $graph = new Graphp\Graph\Graph();
 
-$a = $graph->createVertex('a');
-$b = $graph->createVertex('b');
+$a = $graph->createVertex();
+$b = $graph->createVertex();
 
 $edge = $graph->createEdgeDirected($a, $b);
 $edge->setAttribute('flow', 4);
@@ -298,8 +325,8 @@ be appended like in the previous examples.
 ```php
 $graph = new Graphp\Graph\Graph();
 
-$a = $graph->createVertex('a');
-$b = $graph->createVertex('b');
+$a = $graph->createVertex();
+$b = $graph->createVertex();
 
 $edge = $graph->createEdgeDirected($a, $b);
 $edge->setAttribute('graphviz.label', 'important');
@@ -320,7 +347,8 @@ to the static `GraphViz::raw()` helper like this:
 ```php
 $graph = new Graphp\Graph\Graph();
 
-$a = $graph->createVertex('Entity');
+$a = $graph->createVertex();
+$a->setAttribute('id', 'Entity');
 $a->setAttribute('graphviz.shape', 'none');
 $a->setAttribute('graphviz.label', GraphViz::raw('<
 <table cellspacing="0" border="0" cellborder="1">
@@ -329,8 +357,9 @@ $a->setAttribute('graphviz.label', GraphViz::raw('<
     <td>+ touch()</td></tr>
 </table>>'));
 
-$b = $graph->createVertex('Block');
+$b = $graph->createVertex();
 $graph->createEdgeDirected($b, $a);
+$b->setAttribute('id', 'Block');
 $b->setAttribute('graphviz.shape', 'none');
 $b->setAttribute('graphviz.label', GraphViz::raw('<
 <table cellspacing="0" border="0" cellborder="1">

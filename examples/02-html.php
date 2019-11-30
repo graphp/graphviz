@@ -7,8 +7,8 @@ require __DIR__ . '/../vendor/autoload.php';
 $graph = new Graphp\Graph\Graph();
 $graph->setAttribute('graphviz.graph.rankdir', 'LR');
 
-$hello = $graph->createVertex('hello');
-$world = $graph->createVertex('wörld');
+$hello = $graph->createVertex()->setAttribute('id', 'hello');
+$world = $graph->createVertex()->setAttribute('id', 'wörld');
 $graph->createEdgeDirected($hello, $world);
 
 $graphviz = new Graphp\GraphViz\GraphViz();

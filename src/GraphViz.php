@@ -264,9 +264,21 @@ class GraphViz
             }
         }
 
+        // build an array to map vertex hashes to vertex IDs for output
+        $tid = 0;
+        $vids = array();
+
         $groups = array();
-        foreach ($graph->getVertices()->getMap() as $vid => $vertex) {
-            $groups[$vertex->getAttribute('group', 0)][$vid] = $vertex;
+        foreach ($graph->getVertices() as $vertex) {
+            assert($vertex instanceof Vertex);
+            $groups[$vertex->getAttribute('group', 0)][] = $vertex;
+
+            $id = $vertex->getAttribute('id');
+            if ($id === null) {
+                $id = ++$tid;
+            }
+
+            $vids[\spl_object_hash($vertex)] = $id;
         }
 
         // only cluster vertices into groups if there are at least 2 different groups
@@ -277,8 +289,9 @@ class GraphViz
             foreach ($groups as $group => $vertices) {
                 $script .= $this->formatIndent . 'subgraph cluster_' . $gid++ . ' {' . self::EOL .
                            $indent . 'label = ' . $this->escape($group) . self::EOL;
-                foreach ($vertices as $vid => $vertex) {
-                    $layout = $this->getLayoutVertex($vertex);
+                foreach ($vertices as $vertex) {
+                    $vid = $vids[\spl_object_hash($vertex)];
+                    $layout = $this->getLayoutVertex($vertex, $vid);
 
                     $script .= $indent . $this->escapeId($vid);
                     if ($layout) {
@@ -291,8 +304,9 @@ class GraphViz
         } else {
             // explicitly add all isolated vertices (vertices with no edges) and vertices with special layout set
             // other vertices wil be added automatically due to below edge definitions
-            foreach ($graph->getVertices()->getMap() as $vid => $vertex){
-                $layout = $this->getLayoutVertex($vertex);
+            foreach ($graph->getVertices() as $vertex){
+                $vid = $vids[\spl_object_hash($vertex)];
+                $layout = $this->getLayoutVertex($vertex, $vid);
 
                 if ($layout || $vertex->getEdges()->isEmpty()) {
                     $script .= $this->formatIndent . $this->escapeId($vid);
@@ -312,7 +326,7 @@ class GraphViz
             $currentStartVertex = $both[0];
             $currentTargetVertex = $both[1];
 
-            $script .= $this->formatIndent . $this->escapeId($currentStartVertex->getId()) . $edgeop . $this->escapeId($currentTargetVertex->getId());
+            $script .= $this->formatIndent . $this->escapeId($vids[\spl_object_hash($currentStartVertex)]) . $edgeop . $this->escapeId($vids[\spl_object_hash($currentTargetVertex)]);
 
             $layout = $this->getLayoutEdge($currentEdge);
 
@@ -394,7 +408,7 @@ class GraphViz
         return (object) array('string' => $string);
     }
 
-    protected function getLayoutVertex(Vertex $vertex)
+    private function getLayoutVertex(Vertex $vertex, $vid)
     {
         $bag = new AttributeBagNamespaced($vertex, 'graphviz.');
         $layout = $bag->getAttributes();
@@ -405,7 +419,7 @@ class GraphViz
                 $balance = '+' . $balance;
             }
             if (!isset($layout['label'])) {
-                $layout['label'] = $vertex->getId();
+                $layout['label'] = $vid;
             }
             $layout['label'] .= ' (' . $balance . ')';
         }

@@ -6,7 +6,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $graph = new Graphp\Graph\Graph();
 
-$a = $graph->createVertex('Entity');
+$a = $graph->createVertex()->setAttribute('id', 'Entity');
 $a->setAttribute('graphviz.shape', 'none');
 $a->setAttribute('graphviz.label', GraphViz::raw('<
 <table cellspacing="0" border="0" cellborder="1">
@@ -15,7 +15,7 @@ $a->setAttribute('graphviz.label', GraphViz::raw('<
     <td>+ touch()</td></tr>
 </table>>'));
 
-$b = $graph->createVertex('Block');
+$b = $graph->createVertex()->setAttribute('id', 'Block');
 $graph->createEdgeDirected($b, $a);
 $b->setAttribute('graphviz.shape', 'none');
 $b->setAttribute('graphviz.label', GraphViz::raw('<

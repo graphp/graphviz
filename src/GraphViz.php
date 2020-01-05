@@ -2,9 +2,9 @@
 
 namespace Graphp\GraphViz;
 
-use Graphp\Graph\Attribute\AttributeBagNamespaced;
 use Graphp\Graph\Edge;
 use Graphp\Graph\EdgeDirected;
+use Graphp\Graph\Entity;
 use Graphp\Graph\Exception\UnexpectedValueException;
 use Graphp\Graph\Graph;
 use Graphp\Graph\Vertex;
@@ -257,9 +257,7 @@ class GraphViz
         );
 
         foreach ($globals as $key => $prefix) {
-            $bag = new AttributeBagNamespaced($graph, $prefix);
-
-            if ($layout = $bag->getAttributes()) {
+            if ($layout = $this->getAttributesPrefixed($graph, $prefix)) {
                 $script .= $this->formatIndent . $key . ' ' . $this->escapeAttributes($layout) . self::EOL;
             }
         }
@@ -410,8 +408,7 @@ class GraphViz
 
     private function getLayoutVertex(Vertex $vertex, $vid)
     {
-        $bag = new AttributeBagNamespaced($vertex, 'graphviz.');
-        $layout = $bag->getAttributes();
+        $layout = $this->getAttributesPrefixed($vertex, 'graphviz.');
 
         $balance = $vertex->getAttribute($this->attributeBalance);
         if ($balance !== NULL) {
@@ -429,8 +426,7 @@ class GraphViz
 
     protected function getLayoutEdge(Edge $edge)
     {
-        $bag = new AttributeBagNamespaced($edge, 'graphviz.');
-        $layout = $bag->getAttributes();
+        $layout = $this->getAttributesPrefixed($edge, 'graphviz.');
 
         // use flow/capacity/weight as edge label
         $label = NULL;
@@ -464,5 +460,23 @@ class GraphViz
             }
         }
         return $layout;
+    }
+
+    /**
+     * @param Graph|Vertex|Edge $entity
+     * @param string            $prefix
+     * @return array
+     */
+    private function getAttributesPrefixed(Entity $entity, $prefix)
+    {
+        $len = \strlen($prefix);
+        $attributes = array();
+        foreach ($entity->getAttributes() as $name => $value) {
+            if (\strpos($name, $prefix) === 0) {
+                $attributes[substr($name, $len)] = $value;
+            }
+        }
+
+        return $attributes;
     }
 }

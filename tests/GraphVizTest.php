@@ -340,8 +340,8 @@ VIZ;
         $graph->createEdgeUndirected($graph->createVertex()->setAttribute('id', '1a'), $graph->createVertex()->setAttribute('id', '1b'));
         $graph->createEdgeUndirected($graph->createVertex()->setAttribute('id', '2a'), $graph->createVertex()->setAttribute('id', '2b'))->setAttribute('graphviz.numeric', 20);
         $graph->createEdgeUndirected($graph->createVertex()->setAttribute('id', '3a'), $graph->createVertex()->setAttribute('id', '3b'))->setAttribute('graphviz.textual', "forty");
-        $graph->createEdgeUndirected($graph->createVertex()->setAttribute('id', '4a'), $graph->createVertex()->setAttribute('id', '4b'))->getAttributeBag()->setAttributes(array('graphviz.1' => 1, 'graphviz.2' => 2));
-        $graph->createEdgeUndirected($graph->createVertex()->setAttribute('id', '5a'), $graph->createVertex()->setAttribute('id', '5b'))->getAttributeBag()->setAttributes(array('graphviz.a' => 'b', 'graphviz.c' => 'd'));
+        $graph->createEdgeUndirected($graph->createVertex()->setAttribute('id', '4a'), $graph->createVertex()->setAttribute('id', '4b'))->setAttribute('graphviz.1', 1)->setAttribute('graphviz.2', 2);
+        $graph->createEdgeUndirected($graph->createVertex()->setAttribute('id', '5a'), $graph->createVertex()->setAttribute('id', '5b'))->setAttribute('graphviz.a', 'b')->setAttribute('graphviz.c', 'd');
 
         $expected = <<<VIZ
 graph {

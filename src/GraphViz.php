@@ -379,17 +379,16 @@ class GraphViz
                 $script .= ' ';
             }
 
-            // unescaped attributes start with an underscore (which needs to be dropped)
-            if (isset($name[0]) && $name[0] === '_') {
-                $name = \substr($name, 1);
-
-                // HTML-like labels need to be wrapped in angle brackets, record labels need to be quoted
-                if (\preg_match('/^\s*<.*\>\s*$/m', $value)) {
-                    $value = '<' . $value . '>';
-                } else {
-                    $value = '"' . \str_replace('"', '\\"', $value) . '"';
-                }
+            if (\substr($name, -5) === '_html') {
+                // HTML-like labels need to be wrapped in angle brackets
+                $name = \substr($name, 0, -5);
+                $value = '<' . $value . '>';
+            } elseif (\substr($name, -7) === '_record') {
+                // record labels need to be quoted
+                $name = \substr($name, 0, -7);
+                $value = '"' . \str_replace('"', '\\"', $value) . '"';
             } else {
+                // all normal attributes need to be escaped and/or quoted
                 $value = $this->escape($value);
             }
 

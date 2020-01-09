@@ -2,11 +2,9 @@
 
 namespace Graphp\GraphViz;
 
-use Graphp\GraphViz\GraphViz;
-use Fhaculty\Graph\Graph;
-use Fhaculty\Graph\Exporter\ExporterInterface;
+use Graphp\Graph\Graph;
 
-class Dot implements ExporterInterface
+class Dot
 {
     private $graphviz;
 

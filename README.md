@@ -341,8 +341,8 @@ that support a subset of HTML features.
 
 GraphViz requires any HTML-like label to be wrapped in `<` and `>` and only
 supports a limited subset of HTML features as documented above. In order to
-prevent automatic quoting and escaping, all attribute values have to be passed
-to the static `GraphViz::raw()` helper like this:
+prevent automatic quoting and escaping, all HTML-like attribute values need to
+be passed with a trailing `_html` in the attribute name like this:
 
 ```php
 $graph = new Graphp\Graph\Graph();
@@ -350,23 +350,23 @@ $graph = new Graphp\Graph\Graph();
 $a = $graph->createVertex();
 $a->setAttribute('id', 'Entity');
 $a->setAttribute('graphviz.shape', 'none');
-$a->setAttribute('graphviz.label', GraphViz::raw('<
+$a->setAttribute('graphviz.label_html', '
 <table cellspacing="0" border="0" cellborder="1">
     <tr><td bgcolor="#eeeeee"><b>\N</b></td></tr>
-    <tr><td></td></tr><tr>
-    <td>+ touch()</td></tr>
-</table>>'));
+    <tr><td></td></tr>
+    <tr><td>+ touch()</td></tr>
+</table>');
 
 $b = $graph->createVertex();
 $graph->createEdgeDirected($b, $a);
 $b->setAttribute('id', 'Block');
 $b->setAttribute('graphviz.shape', 'none');
-$b->setAttribute('graphviz.label', GraphViz::raw('<
+$b->setAttribute('graphviz.label_html', '
 <table cellspacing="0" border="0" cellborder="1">
     <tr><td bgcolor="#eeeeee"><b>\N</b></td></tr>
     <tr><td>- size:int</td></tr>
     <tr><td>+ touch()</td></tr>
-</table>>'));
+</table>');
 ```
 
 ![UML html graph example](examples/11-uml-html.png)
@@ -383,19 +383,19 @@ using the `record` and `Mrecord` shape attributes and structured label attribute
 
 GraphViz requires any record-based node label to be quoted, but uses special
 syntax to mark record fields and optional port names. In order to prevent
-automatic quoting and escaping, all attribute values have to be quoted manually
-and passed to the static `GraphViz::raw()` helper like this:
+automatic quoting and escaping, all record-based attribute values need to
+be passed with a trailing `_record` in the attribute name like this:
 
 ```php
 $graph = new Graphp\Graph\Graph();
 
 $a = $graph->createVertex();
 $a->setAttribute('graphviz.shape', 'Mrecord');
-$a->setAttribute('graphviz.label', GraphViz::raw('"<f0> left |<middle> middle |<f2> right"'));
+$a->setAttribute('graphviz.label_record', '<f0> left |<middle> middle |<f2> right'));
 
 $b = $graph->createVertex();
 $b->setAttribute('graphviz.shape', 'Mrecord');
-$b->setAttribute('graphviz.label', GraphViz::raw('"<f0> left |<f1> middle |<right> right"'));
+$b->setAttribute('graphviz.label_record', '<f0> left |<f1> middle |<right> right'));
 
 // a:middle -> b:right
 $edge = $graph->createEdgeDirected($a, $b);

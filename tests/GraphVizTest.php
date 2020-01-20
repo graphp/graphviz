@@ -152,8 +152,10 @@ VIZ;
         $graph->createVertex()->setAttribute('id', 'b¹²³ is; ok\\ay, "right"?');
         $graph->createVertex()->setAttribute('id', 3);
         $graph->createVertex()->setAttribute('id', 4)->setAttribute('graphviz.label', 'normal');
-        $graph->createVertex()->setAttribute('id', 5)->setAttribute('graphviz.label', GraphViz::raw('<raw>'));
-
+        $graph->createVertex()->setAttribute('id', 5)->setAttribute('graphviz.label_html', '<b>html-like</b>');
+        $graph->createVertex()->setAttribute('id', 6)->setAttribute('graphviz.label_html', 'hello<br/>wörld');
+        $graph->createVertex()->setAttribute('id', 7)->setAttribute('graphviz.label_record', '<port>first|{second1|second2}');
+        $graph->createVertex()->setAttribute('id', 8)->setAttribute('graphviz.label_record', '"\N"');
 
         $expected = <<<VIZ
 graph {
@@ -161,7 +163,10 @@ graph {
   "b¹²³ is; ok\\\\ay, &quot;right&quot;?"
   3
   4 [label="normal"]
-  5 [label=<raw>]
+  5 [label=<<b>html-like</b>>]
+  6 [label=<hello<br/>wörld>]
+  7 [label="<port>first|{second1|second2}"]
+  8 [label="\\"\\N\\""]
 }
 
 VIZ;

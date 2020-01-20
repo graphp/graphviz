@@ -244,7 +244,7 @@ class GraphViz
          */
         $name = $graph->getAttribute('graphviz.name');
         if ($name !== null) {
-            $name = $this->escapeId($name) . ' ';
+            $name = $this->escape($name) . ' ';
         }
 
         $script = ($directed ? 'di':'') . 'graph ' . $name . '{' . self::EOL;
@@ -291,7 +291,7 @@ class GraphViz
                     $vid = $vids[\spl_object_hash($vertex)];
                     $layout = $this->getLayoutVertex($vertex, $vid);
 
-                    $script .= $indent . $this->escapeId($vid);
+                    $script .= $indent . $this->escape($vid);
                     if ($layout) {
                         $script .= ' ' . $this->escapeAttributes($layout);
                     }
@@ -307,7 +307,7 @@ class GraphViz
                 $layout = $this->getLayoutVertex($vertex, $vid);
 
                 if ($layout || $vertex->getEdges()->isEmpty()) {
-                    $script .= $this->formatIndent . $this->escapeId($vid);
+                    $script .= $this->formatIndent . $this->escape($vid);
                     if ($layout) {
                         $script .= ' ' . $this->escapeAttributes($layout);
                     }
@@ -324,7 +324,7 @@ class GraphViz
             $currentStartVertex = $both[0];
             $currentTargetVertex = $both[1];
 
-            $script .= $this->formatIndent . $this->escapeId($vids[\spl_object_hash($currentStartVertex)]) . $edgeop . $this->escapeId($vids[\spl_object_hash($currentTargetVertex)]);
+            $script .= $this->formatIndent . $this->escape($vids[\spl_object_hash($currentStartVertex)]) . $edgeop . $this->escape($vids[\spl_object_hash($currentTargetVertex)]);
 
             $layout = $this->getLayoutEdge($currentEdge);
 
@@ -344,23 +344,14 @@ class GraphViz
     }
 
     /**
-     * escape given id string and wrap in quotes if needed
+     * escape given string value and wrap in quotes if needed
      *
      * @param  string $id
      * @return string
      * @link http://graphviz.org/content/dot-language
      */
-    private function escapeId($id)
+    private function escape($id)
     {
-        return self::escape($id);
-    }
-
-    public static function escape($id)
-    {
-        // see raw()
-        if ($id instanceof \stdClass && isset($id->string)) {
-            return $id->string;
-        }
         // see @link: There is no semantic difference between abc_2 and "abc_2"
         // numeric or simple string, no need to quote (only for simplicity)
         if (preg_match('/^(?:\-?(?:\.\d+|\d+(?:\.\d+)?))$/i', $id)) {
@@ -375,7 +366,7 @@ class GraphViz
      *
      * @param  array  $attrs
      * @return string
-     * @uses GraphViz::escapeId()
+     * @uses GraphViz::escape()
      */
     private function escapeAttributes($attrs)
     {
@@ -387,23 +378,25 @@ class GraphViz
             } else {
                 $script .= ' ';
             }
-            $script .= $name . '=' . self::escape($value);
+
+            if (\substr($name, -5) === '_html') {
+                // HTML-like labels need to be wrapped in angle brackets
+                $name = \substr($name, 0, -5);
+                $value = '<' . $value . '>';
+            } elseif (\substr($name, -7) === '_record') {
+                // record labels need to be quoted
+                $name = \substr($name, 0, -7);
+                $value = '"' . \str_replace('"', '\\"', $value) . '"';
+            } else {
+                // all normal attributes need to be escaped and/or quoted
+                $value = $this->escape($value);
+            }
+
+            $script .= $name . '=' . $value;
         }
         $script .= ']';
 
         return $script;
-    }
-
-    /**
-     * create a raw string representation, i.e. do NOT escape the given string when used in graphviz output
-     *
-     * @param  string   $string
-     * @return \stdClass
-     * @see GraphViz::escape()
-     */
-    public static function raw($string)
-    {
-        return (object) array('string' => $string);
     }
 
     private function getLayoutVertex(Vertex $vertex, $vid)

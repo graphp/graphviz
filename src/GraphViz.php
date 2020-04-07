@@ -42,6 +42,8 @@ class GraphViz
     private $attributeGroup = 'group';
     private $attributeBalance = 'balance';
 
+    private $ranks = array();
+
     const DELAY_OPEN = 2.0;
 
     const EOL = PHP_EOL;
@@ -96,6 +98,47 @@ class GraphViz
     {
         $this->format = $format;
 
+        return $this;
+    }
+
+    /**
+     * set rank for vertex
+     *
+     * @param  int   $rank
+     * @param  string   $vertex vertex have the same rank
+     * @param  string   $type "same", "min", "source", "max", "sink"
+     * @param  string   $group vertex in the subgraph
+     * @return GraphViz $this (chainable)
+     */
+    public function setRank($rank, $vertex, $type = 'same', $group = null)
+    {
+        $id = \spl_object_hash($vertex);
+        if (isset($this->ranks[$group][$type][$rank])) {
+            $this->ranks[$group][$type][$rank][$id] = $id;
+        } else if (isset($this->ranks[$group][$type])) {
+            $this->ranks[$group][$type][$rank] = array($id => $id);
+        } else if (isset($this->ranks[$group])) {
+            $this->ranks[$group][$type] = array($rank => array($id => $id));
+        } else {
+            $this->ranks[$group] = array($type => array($rank => array($id => $id)));
+        }
+        return $this;
+    }
+
+    /**
+     * set rank for vertexes
+     *
+     * @param  int   $rank
+     * @param  string   $vertexes vertexs have the same rank
+     * @param  string   $type "same", "min", "source", "max", "sink"
+     * @param  string   $group vertex in the subgraph
+     * @return GraphViz $this (chainable)
+     */
+    public function setRanks($rank, array $vertexes, $type = 'same', $group = null)
+    {
+        foreach ($vertexes as $vertex) {
+            $this->setRank($rank, $vertex, $type, $group);
+        }
         return $this;
     }
 
@@ -247,7 +290,7 @@ class GraphViz
             $name = $this->escape($name) . ' ';
         }
 
-        $script = ($directed ? 'di':'') . 'graph ' . $name . '{' . self::EOL;
+        $script = ($directed ? 'digraph ' : 'graph ') . $name . '{' . self::EOL;
 
         // add global attributes
         $globals = array(
@@ -266,78 +309,89 @@ class GraphViz
         $tid = 0;
         $vids = array();
 
-        $groups = array();
+        $groupVertexs = array();
         foreach ($graph->getVertices() as $vertex) {
-            assert($vertex instanceof Vertex);
-            $groups[$vertex->getAttribute('group', 0)][] = $vertex;
+            //assert($vertex instanceof Vertex);
+            $groupVertexs[$vertex->getAttribute('group')][] = $vertex;
 
             $id = $vertex->getAttribute('id');
             if ($id === null) {
                 $id = ++$tid;
+            } else {
+                $id = $this->escape($id);
             }
 
             $vids[\spl_object_hash($vertex)] = $id;
         }
 
-        // only cluster vertices into groups if there are at least 2 different groups
-        if (count($groups) > 1) {
-            $indent = str_repeat($this->formatIndent, 2);
-            $gid = 0;
-            // put each group of vertices in a separate subgraph cluster
-            foreach ($groups as $group => $vertices) {
-                $script .= $this->formatIndent . 'subgraph cluster_' . $gid++ . ' {' . self::EOL .
-                           $indent . 'label = ' . $this->escape($group) . self::EOL;
-                foreach ($vertices as $vertex) {
-                    $vid = $vids[\spl_object_hash($vertex)];
-                    $layout = $this->getLayoutVertex($vertex, $vid);
+        $groupEdges = array();
+        // add all edges as directed edges
+        foreach ($graph->getEdges() as $edge) {
+            $groupEdges[$edge->getAttribute('group')][] = $edge;
+        }
 
-                    $script .= $indent . $this->escape($vid);
-                    if ($layout) {
-                        $script .= ' ' . $this->escapeAttributes($layout);
-                    }
-                    $script .= self::EOL;
-                }
-                $script .= '  }' . self::EOL;
+        $gid = 0;
+        $edgeop = $directed ? ' -> ' : ' -- ';
+        // put each group of vertices in a separate subgraph cluster
+        foreach ($groupVertexs as $group => $vertices) {
+            if ($group !== '') {
+                $indent = str_repeat($this->formatIndent, 2);
+                $script .= $this->formatIndent . 'subgraph cluster_' . $gid++ . ' {' .
+                    self::EOL . $indent . 'label = ' . $this->escape($group) . self::EOL;
+            } else {
+                $indent = $this->formatIndent;
             }
-        } else {
             // explicitly add all isolated vertices (vertices with no edges) and vertices with special layout set
             // other vertices wil be added automatically due to below edge definitions
-            foreach ($graph->getVertices() as $vertex){
+            foreach ($vertices as $vertex){
                 $vid = $vids[\spl_object_hash($vertex)];
                 $layout = $this->getLayoutVertex($vertex, $vid);
 
                 if ($layout || $vertex->getEdges()->isEmpty()) {
-                    $script .= $this->formatIndent . $this->escape($vid);
+                    $script .= $indent . $vid;
                     if ($layout) {
                         $script .= ' ' . $this->escapeAttributes($layout);
                     }
                     $script .= self::EOL;
                 }
             }
+            if (isset($groupEdges[$group])) {
+                foreach ($groupEdges[$group] as $edge) {
+                    $both = $edge->getVertices()->getVector();
+                    $startVertex = $both[0];
+                    $targetVertex = $both[1];
+
+                    $script .= $indent . $vids[\spl_object_hash($startVertex)] . $edgeop . $vids[\spl_object_hash($targetVertex)];
+
+                    $layout = $this->getLayoutEdge($edge);
+
+                    // this edge is not a loop and also points to the opposite direction => this is actually an undirected edge
+                    if ($directed && $startVertex !== $targetVertex && $edge->isConnection($targetVertex, $startVertex)) {
+                        $layout['dir'] = 'none';
+                    }
+                    if ($layout) {
+                        $script .= ' ' . $this->escapeAttributes($layout);
+                    }
+
+                    $script .= self::EOL;
+                }
+            }
+            if (isset($this->ranks[$group])) {
+                foreach ($this->ranks[$group] as $type => $ranks) {
+                    foreach ($ranks as $vers) {
+                        $ids = [];
+                        foreach ($vers as $id) {
+                            $ids[] = $vids[$id];
+                        }
+                        $script .= $indent . '{rank=' . $type . ' ' . implode(' ', $ids) . '}' . self::EOL;
+                    }
+                }
+            }
+            if ($group !== '') {
+                $script .= '  }' . self::EOL;
+            }
         }
 
-        $edgeop = $directed ? ' -> ' : ' -- ';
-
-        // add all edges as directed edges
-        foreach ($graph->getEdges() as $currentEdge) {
-            $both = $currentEdge->getVertices()->getVector();
-            $currentStartVertex = $both[0];
-            $currentTargetVertex = $both[1];
-
-            $script .= $this->formatIndent . $this->escape($vids[\spl_object_hash($currentStartVertex)]) . $edgeop . $this->escape($vids[\spl_object_hash($currentTargetVertex)]);
-
-            $layout = $this->getLayoutEdge($currentEdge);
-
-            // this edge is not a loop and also points to the opposite direction => this is actually an undirected edge
-            if ($directed && $currentStartVertex !== $currentTargetVertex && $currentEdge->isConnection($currentTargetVertex, $currentStartVertex)) {
-                $layout['dir'] = 'none';
-            }
-            if ($layout) {
-                $script .= ' ' . $this->escapeAttributes($layout);
-            }
-
-            $script .= self::EOL;
-        }
         $script .= '}' . self::EOL;
 
         return $script;

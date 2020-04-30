@@ -281,12 +281,24 @@ class GraphViz
 
         // only cluster vertices into groups if there are at least 2 different groups
         if (count($groups) > 1) {
+            // add subgraph cluster attributes
+            $clusters = array(
+                'graph' => 'graphviz.subgraph.cluster_%d.graph.',
+                'node'  => 'graphviz.subgraph.cluster_%d.node.',
+                'edge'  => 'graphviz.subgraph.cluster_%d.edge.',
+            );
             $indent = str_repeat($this->formatIndent, 2);
             $gid = 0;
             // put each group of vertices in a separate subgraph cluster
             foreach ($groups as $group => $vertices) {
-                $script .= $this->formatIndent . 'subgraph cluster_' . $gid++ . ' {' . self::EOL .
-                           $indent . 'label = ' . $this->escape($group) . self::EOL;
+                $script .= $this->formatIndent . 'subgraph cluster_' . $gid . ' {' . self::EOL;
+                foreach ($clusters as $key => $prefix) {
+                    if ($layout = $this->getAttributesPrefixed($graph, sprintf($prefix, $gid))) {
+                        $script .= $indent . $key . ' ' . $this->escapeAttributes($layout) . self::EOL;
+                    }
+                }
+                $script .= $indent . 'label = ' . $this->escape($group) . self::EOL;
+                $gid++;
                 foreach ($vertices as $vertex) {
                     $vid = $vids[\spl_object_hash($vertex)];
                     $layout = $this->getLayoutVertex($vertex, $vid);

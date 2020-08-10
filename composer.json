@@ -13,6 +13,6 @@
         "graphp/graph": "dev-master#81eef65 as 1.0.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.4 || ^5.7 || ^4.8.35"
+        "phpunit/phpunit": "^9.3 || ^5.7 || ^4.8.35"
     }
 }

@@ -8,7 +8,10 @@ class GraphVizTest extends TestCase
 {
     private $graphViz;
 
-    public function setUp()
+    /**
+     * @before
+     */
+    public function setUpGraphViz()
     {
         $this->graphViz = new GraphViz();
     }

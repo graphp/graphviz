@@ -5,7 +5,6 @@ namespace Graphp\GraphViz;
 use Graphp\Graph\Edge;
 use Graphp\Graph\EdgeDirected;
 use Graphp\Graph\Entity;
-use Graphp\Graph\Exception\UnexpectedValueException;
 use Graphp\Graph\Graph;
 use Graphp\Graph\Vertex;
 
@@ -187,7 +186,7 @@ class GraphViz
      *
      * @param Graph $graph graph to display
      * @return string                   filename
-     * @throws UnexpectedValueException on error
+     * @throws \UnexpectedValueException on error
      * @uses GraphViz::createScript()
      */
     public function createImageFile(Graph $graph)
@@ -197,12 +196,12 @@ class GraphViz
 
         $tmp = tempnam(sys_get_temp_dir(), 'graphviz');
         if ($tmp === false) {
-            throw new UnexpectedValueException('Unable to get temporary file name for graphviz script');
+            throw new \UnexpectedValueException('Unable to get temporary file name for graphviz script');
         }
 
         $ret = file_put_contents($tmp, $script, LOCK_EX);
         if ($ret === false) {
-            throw new UnexpectedValueException('Unable to write graphviz script to temporary file');
+            throw new \UnexpectedValueException('Unable to write graphviz script to temporary file');
         }
 
         $ret = 0;
@@ -210,7 +209,7 @@ class GraphViz
         $executable = $this->getExecutable();
         system(escapeshellarg($executable) . ' -T ' . escapeshellarg($this->format) . ' ' . escapeshellarg($tmp) . ' -o ' . escapeshellarg($tmp . '.' . $this->format), $ret);
         if ($ret !== 0) {
-            throw new UnexpectedValueException('Unable to invoke "' . $executable .'" to create image file (code ' . $ret . ')');
+            throw new \UnexpectedValueException('Unable to invoke "' . $executable .'" to create image file (code ' . $ret . ')');
         }
 
         unlink($tmp);

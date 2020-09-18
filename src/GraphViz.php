@@ -306,7 +306,7 @@ class GraphViz
                 $vid = $vids[\spl_object_hash($vertex)];
                 $layout = $this->getLayoutVertex($vertex, $vid);
 
-                if ($layout || $vertex->getEdges()->isEmpty()) {
+                if ($layout || [] === $vertex->getEdges()) {
                     $script .= $this->formatIndent . $this->escape($vid);
                     if ($layout) {
                         $script .= ' ' . $this->escapeAttributes($layout);
@@ -320,7 +320,7 @@ class GraphViz
 
         // add all edges as directed edges
         foreach ($graph->getEdges() as $currentEdge) {
-            $both = $currentEdge->getVertices()->getVector();
+            $both = $currentEdge->getVertices();
             $currentStartVertex = $both[0];
             $currentTargetVertex = $both[1];
 

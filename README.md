@@ -1,4 +1,6 @@
-# graphp/graphviz [![Build Status](https://travis-ci.org/graphp/graphviz.svg?branch=master)](https://travis-ci.org/graphp/graphviz)
+# graphp/graphviz
+
+[![CI status](https://github.com/graphp/graphviz/workflows/CI/badge.svg)](https://github.com/graphp/graphviz/actions)
 
 GraphViz graph drawing for the mathematical graph/network library GraPHP.
 

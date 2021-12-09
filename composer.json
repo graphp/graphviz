@@ -1,5 +1,5 @@
 {
-    "name": "graphp/graphviz",
+    "name": "progresusit/graphviz",
     "type": "library",
     "description": "GraphViz graph drawing for the mathematical graph/network library GraPHP.",
     "keywords": ["GraphViz", "graph drawing", "graph image", "dot output", "GraPHP"],
@@ -9,7 +9,7 @@
         "psr-4": {"Graphp\\GraphViz\\": "src/"}
     },
     "require": {
-        "php": ">=5.3.0",
+        "php": ">=7.4",
         "graphp/graph": "dev-master#81eef65 as 1.0.0"
     },
     "require-dev": {

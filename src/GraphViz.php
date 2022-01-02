@@ -228,10 +228,10 @@ class GraphViz
      */
     public function createScript(Graph $graph)
     {
-        $directed = false;
+        $hasDirectedEdges = false;
         foreach ($graph->getEdges() as $edge) {
             if ($edge instanceof EdgeDirected) {
-                $directed = true;
+                $hasDirectedEdges = true;
                 break;
             }
         }
@@ -246,17 +246,11 @@ class GraphViz
             $name = $this->escape($name) . ' ';
         }
 
-        $script = ($directed ? 'di':'') . 'graph ' . $name . '{' . self::EOL;
+        $script = ($hasDirectedEdges ? 'di':'') . 'graph ' . $name . '{' . self::EOL;
 
         // add global attributes
-        $globals = array(
-            'graph' => 'graphviz.graph.',
-            'node'  => 'graphviz.node.',
-            'edge'  => 'graphviz.edge.',
-        );
-
-        foreach ($globals as $key => $prefix) {
-            if ($layout = $this->getAttributesPrefixed($graph, $prefix)) {
+        foreach (array('graph', 'node', 'edge') as $key) {
+            if ($layout = $this->getAttributesPrefixed($graph, 'graphviz.' . $key . '.')) {
                 $script .= $this->formatIndent . $key . ' ' . $this->escapeAttributes($layout) . self::EOL;
             }
         }
@@ -315,20 +309,19 @@ class GraphViz
             }
         }
 
-        $edgeop = $directed ? ' -> ' : ' -- ';
+        $edgeop = $hasDirectedEdges ? ' -> ' : ' -- ';
 
         // add all edges as directed edges
-        foreach ($graph->getEdges() as $currentEdge) {
-            $both = $currentEdge->getVertices();
-            $currentStartVertex = $both[0];
-            $currentTargetVertex = $both[1];
+        foreach ($graph->getEdges() as $edge) {
+            $vertices = $edge->getVertices();
+            assert($vertices[0] instanceof Vertex && $vertices[1] instanceof Vertex);
 
-            $script .= $this->formatIndent . $this->escape($vids[\spl_object_hash($currentStartVertex)]) . $edgeop . $this->escape($vids[\spl_object_hash($currentTargetVertex)]);
+            $script .= $this->formatIndent . $this->escape($vids[\spl_object_hash($vertices[0])]) . $edgeop . $this->escape($vids[\spl_object_hash($vertices[1])]);
 
-            $layout = $this->getLayoutEdge($currentEdge);
+            $layout = $this->getLayoutEdge($edge);
 
-            // this edge is not a loop and also points to the opposite direction => this is actually an undirected edge
-            if ($directed && $currentStartVertex !== $currentTargetVertex && $currentEdge->isConnection($currentTargetVertex, $currentStartVertex)) {
+            // omit arrow head if this is an undirected edge in a mixed graph
+            if ($hasDirectedEdges && !$edge instanceof EdgeDirected) {
                 $layout['dir'] = 'none';
             }
             if ($layout) {

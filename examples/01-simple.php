@@ -13,7 +13,6 @@ $red->setAttribute('id', 'red');
 $red->setAttribute('graphviz.color', 'red');
 
 $edge = $graph->createEdgeDirected($blue, $red);
-$edge = $blue->createEdgeTo($red);
 $edge->setAttribute('graphviz.color', 'grey');
 
 $graphviz = new Graphp\GraphViz\GraphViz();

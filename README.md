@@ -4,14 +4,21 @@
 
 GraphViz graph drawing for the mathematical graph/network library GraPHP.
 
+> **Development version:** This branch contains the code for the upcoming 1.0 release.
+> For the code of the current stable 0.2 release, check out the
+> [`0.2.x` branch](https://github.com/graphp/graphviz/tree/0.2.x).
+>
+> The upcoming 1.0 release will be the way forward for this package.
+> However, we will still actively support 0.2.x for those not yet
+> on the latest version.
+> See also [installation instructions](#install) for more details.
+
 The library supports visualizing graph images, including them into webpages,
 opening up images from within CLI applications and exporting them
 as PNG, JPEG or SVG file formats (among many others).
 Because [graph drawing](http://en.wikipedia.org/wiki/Graph_drawing) is a complex area on its own,
 the actual layouting of the graph is left up to the excelent [GraphViz](http://www.graphviz.org/)
 "Graph Visualization Software" and we merely provide some convenient APIs to interface with GraphViz.
-
-> Note: This project is in beta stage! Feel free to report any issues you encounter.
 
 **Table of contents**
 
@@ -411,13 +418,14 @@ See also the [examples](examples/).
 
 ## Install
 
-The recommended way to install this library is [through Composer](https://getcomposer.org).
+The recommended way to install this library is [through Composer](https://getcomposer.org/).
 [New to Composer?](https://getcomposer.org/doc/00-intro.md)
 
-This will install the latest supported version:
+Once released, this project will follow [SemVer](https://semver.org/).
+At the moment, this will install the latest development version:
 
 ```bash
-$ composer require graphp/graphviz:^0.2.2
+composer require graphp/graphviz:^1@dev
 ```
 
 See also the [CHANGELOG](CHANGELOG.md) for details about version upgrades.
@@ -434,24 +442,24 @@ installation instructions for most common platforms, users of Debian/Ubuntu-base
 distributions may simply invoke:
 
 ```bash
-$ sudo apt install graphviz
+sudo apt install graphviz
 ```
 
 ## Tests
 
 To run the test suite, you first need to clone this repo and then install all
-dependencies [through Composer](https://getcomposer.org):
+dependencies [through Composer](https://getcomposer.org/):
 
 ```bash
-$ composer install
+composer install
 ```
 
 To run the test suite, go to the project root and run:
 
 ```bash
-$ php vendor/bin/phpunit
+vendor/bin/phpunit
 ```
 
 ## License
 
-Released under the terms of the permissive [MIT license](http://opensource.org/licenses/MIT).
+This project is released under the permissive [MIT license](LICENSE).

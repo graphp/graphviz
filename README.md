@@ -425,7 +425,7 @@ Once released, this project will follow [SemVer](https://semver.org/).
 At the moment, this will install the latest development version:
 
 ```bash
-composer require graphp/graphviz:^1@dev
+composer require graphp/graphviz:^1@dev graphp/graph:^1@dev
 ```
 
 See also the [CHANGELOG](CHANGELOG.md) for details about version upgrades.
